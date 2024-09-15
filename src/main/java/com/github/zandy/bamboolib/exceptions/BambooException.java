@@ -5,27 +5,25 @@ import java.util.Collections;
 import java.util.List;
 
 public class BambooException extends RuntimeException {
-   private static final String line = "&7&m----------------------------------";
-   private static final String space = " ";
-   private static final String title = "&c&lERROR OCCURRED!";
-   private static final String description = "&eDescription:";
+   private static final String LINE = "&7&m----------------------------------";
+   private static final String SPACE = " ";
+   private static final String TITLE = "&c&lERROR OCCURRED!";
+   private static final String DESCRIPTION = "&eDescription:";
 
-   public BambooException(String var1) {
-      this.execute(Collections.singletonList(var1));
+   public BambooException(String message) {
+      this.execute(Collections.singletonList(message));
    }
 
-   public BambooException(List<String> var1) {
-      this.execute(var1);
+   public BambooException(List<String> messages) {
+      this.execute(messages);
    }
 
-   private void execute(List<String> var1) {
-      BambooUtils.consolePrint("&7&m----------------------------------");
-      BambooUtils.consolePrint("&c&lERROR OCCURRED!");
-      BambooUtils.consolePrint(" ");
-      BambooUtils.consolePrint("&eDescription:");
-      var1.forEach((var0) -> {
-         BambooUtils.consolePrint("&b" + var0);
-      });
-      BambooUtils.consolePrint("&7&m----------------------------------");
+   private void execute(List<String> messages) {
+      BambooUtils.consolePrint(LINE);
+      BambooUtils.consolePrint(TITLE);
+      BambooUtils.consolePrint(SPACE);
+      BambooUtils.consolePrint(DESCRIPTION);
+      messages.forEach(message -> BambooUtils.consolePrint("&b" + message));
+      BambooUtils.consolePrint(LINE);
    }
 }

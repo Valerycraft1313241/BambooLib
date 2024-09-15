@@ -5,30 +5,28 @@ import java.util.Collections;
 import java.util.List;
 
 public class BambooErrorException extends RuntimeException {
-   public static final String line = "&7&m----------------------------------";
-   public static final String header = "    &c&oError occurred in class [className]";
-   public static final String classPath = "Class path: &c[classPath]";
-   public static final String description = "&eDescription:";
-   public static final String completeError = "&cComplete error:";
+   public static final String LINE = "&7&m----------------------------------";
+   public static final String HEADER = "    &c&oError occurred in class [className]";
+   public static final String CLASS_PATH = "Class path: &c[classPath]";
+   public static final String DESCRIPTION = "&eDescription:";
+   public static final String COMPLETE_ERROR = "&cComplete error:";
 
-   public BambooErrorException(Exception var1, Class var2, String var3) {
-      this.execute(var1, var2, Collections.singletonList(var3));
+   public BambooErrorException(Exception exception, Class<?> clazz, String description) {
+      this.execute(exception, clazz, Collections.singletonList(description));
    }
 
-   public BambooErrorException(Exception var1, Class var2, List<String> var3) {
-      this.execute(var1, var2, var3);
+   public BambooErrorException(Exception exception, Class<?> clazz, List<String> descriptions) {
+      this.execute(exception, clazz, descriptions);
    }
 
-   private void execute(Exception var1, Class var2, List<String> var3) {
-      BambooUtils.consolePrint("&7&m----------------------------------");
-      BambooUtils.consolePrint("    &c&oError occurred in class [className]".replace("[className]", var2.getSimpleName()));
-      BambooUtils.consolePrint("Class path: &c[classPath]".replace("[classPath]", var2.getName()));
-      BambooUtils.consolePrint("&eDescription:");
-      var3.forEach((var0) -> {
-         BambooUtils.consolePrint("&e" + var0);
-      });
-      BambooUtils.consolePrint("&cComplete error:");
-      var1.printStackTrace();
-      BambooUtils.consolePrint("&7&m----------------------------------");
+   private void execute(Exception exception, Class<?> clazz, List<String> descriptions) {
+      BambooUtils.consolePrint(LINE);
+      BambooUtils.consolePrint(HEADER.replace("[className]", clazz.getSimpleName()));
+      BambooUtils.consolePrint(CLASS_PATH.replace("[classPath]", clazz.getName()));
+      BambooUtils.consolePrint(DESCRIPTION);
+      descriptions.forEach(description -> BambooUtils.consolePrint("&e" + description));
+      BambooUtils.consolePrint(COMPLETE_ERROR);
+      exception.printStackTrace();
+      BambooUtils.consolePrint(LINE);
    }
 }

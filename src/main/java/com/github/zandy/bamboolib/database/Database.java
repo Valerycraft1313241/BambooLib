@@ -90,7 +90,7 @@ public abstract class Database {
       return this.databaseType;
    }
 
-   public static enum DatabaseType {
+   public enum DatabaseType {
       MYSQL,
       FLAT_FILE;
    }

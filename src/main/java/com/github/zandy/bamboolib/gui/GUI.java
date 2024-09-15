@@ -28,11 +28,11 @@ public class GUI implements Listener {
    private boolean externalInteract;
    private boolean eventsRegistered;
 
-   public GUI(Player var1, InventoryType var2, String var3) {
-      this.title = var3;
-      this.owner = var1;
-      this.inventory = Bukkit.createInventory(var1, var2, BambooUtils.colorize(var3));
-      this.items = new HashMap();
+   public GUI(Player owner, InventoryType type, String title) {
+      this.title = title;
+      this.owner = owner;
+      this.inventory = Bukkit.createInventory(owner, type, BambooUtils.colorize(title));
+      this.items = new HashMap<>();
       this.closeable = true;
       this.opened = false;
       this.externalInteract = false;
@@ -40,11 +40,11 @@ public class GUI implements Listener {
       this.eventsRegistered = true;
    }
 
-   public GUI(Player var1, int var2, String var3) {
-      this.title = var3;
-      this.owner = var1;
-      this.inventory = Bukkit.createInventory(var1, var2, BambooUtils.colorize(var3));
-      this.items = new HashMap();
+   public GUI(Player owner, int size, String title) {
+      this.title = title;
+      this.owner = owner;
+      this.inventory = Bukkit.createInventory(owner, size, BambooUtils.colorize(title));
+      this.items = new HashMap<>();
       this.closeable = true;
       this.opened = false;
       this.externalInteract = false;
@@ -52,47 +52,37 @@ public class GUI implements Listener {
       this.eventsRegistered = true;
    }
 
-   public void setTitle(String var1) {
-      this.title = BambooUtils.colorize(var1);
-      this.inventory = Bukkit.createInventory(this.owner, this.inventory.getSize(), var1);
+   public void setTitle(String title) {
+      this.title = BambooUtils.colorize(title);
+      this.inventory = Bukkit.createInventory(this.owner, this.inventory.getSize(), title);
       if (this.opened) {
          this.open(this.owner);
       }
-
    }
 
-   public void setTitle(String var1, boolean var2) {
-      if (!var2) {
-         this.setTitle(var1);
+   public void setTitle(String title, boolean useType) {
+      if (!useType) {
+         this.setTitle(title);
       } else {
-         this.title = BambooUtils.colorize(var1);
-         this.inventory = Bukkit.createInventory(this.owner, this.inventory.getType(), var1);
+         this.title = BambooUtils.colorize(title);
+         this.inventory = Bukkit.createInventory(this.owner, this.inventory.getType(), title);
          if (this.opened) {
             this.open();
          }
-
       }
    }
 
    public void open() {
-      if (!this.eventsRegistered) {
-         BambooUtils.registerEvent(this);
-      }
-
-      this.eventsRegistered = true;
-      this.setItems();
-      this.refreshItems();
+      registerEventsIfNeeded();
+      setItems();
+      refreshItems();
       this.opened = true;
       this.owner.openInventory(this.inventory);
    }
 
-   public void open(Player var1) {
-      if (!this.eventsRegistered) {
-         BambooUtils.registerEvent(this);
-      }
-
-      this.eventsRegistered = true;
-      this.setItems();
+   public void open(Player player) {
+      registerEventsIfNeeded();
+      setItems();
       this.opened = true;
       this.owner.openInventory(this.inventory);
    }
@@ -106,46 +96,41 @@ public class GUI implements Listener {
    }
 
    public void definitivelyClose() {
-      this.unregisterEvent();
+      unregisterEvent();
       if (this.owner.getOpenInventory().getTopInventory().equals(this.inventory)) {
          this.opened = false;
          this.owner.closeInventory();
       }
-
    }
 
    public void setItems() {
-      this.items.keySet().forEach((var1) -> {
-         this.inventory.setItem(var1, ((GUIItem)this.items.get(var1)).getItemStack());
-      });
+      this.items.forEach((slot, item) -> this.inventory.setItem(slot, item.getItemStack()));
    }
 
-   public GUIItem getItem(int var1) {
-      return (GUIItem)this.items.get(var1);
+   public GUIItem getItem(int slot) {
+      return this.items.get(slot);
    }
 
-   public void addItem(GUIItem var1) {
-      if (this.getItem(var1.getSlot()) != null) {
+   public void addItem(GUIItem item) {
+      if (this.getItem(item.getSlot()) != null) {
          throw new BambooSlotOccupiedException();
       } else {
          if (this.isOpened()) {
-            this.inventory.setItem(var1.getSlot(), var1.getItemStack());
+            this.inventory.setItem(item.getSlot(), item.getItemStack());
          }
-
-         this.items.put(var1.getSlot(), var1);
+         this.items.put(item.getSlot(), item);
       }
    }
 
-   public void removeItem(int var1) {
-      if (this.isOpened() && this.items.containsKey(var1)) {
-         this.inventory.setItem(var1, (ItemStack)null);
+   public void removeItem(int slot) {
+      if (this.isOpened() && this.items.containsKey(slot)) {
+         this.inventory.setItem(slot, null);
       }
-
-      this.items.remove(var1);
+      this.items.remove(slot);
    }
 
-   public void setExternalInteract(boolean var1) {
-      this.externalInteract = var1;
+   public void setExternalInteract(boolean externalInteract) {
+      this.externalInteract = externalInteract;
    }
 
    private void unregisterEvent() {
@@ -154,32 +139,38 @@ public class GUI implements Listener {
       this.eventsRegistered = false;
    }
 
-   public void refreshItems() {
-      this.items.keySet().forEach((var1) -> {
-         ItemStack var2 = ((GUIItem)this.items.get(var1)).getItemStack().clone();
-         if (PlaceholderManager.getInstance().hasPlaceholders(var2)) {
-            this.inventory.setItem(var1, PlaceholderManager.getInstance().setPlaceholders(this.owner, var2));
-         }
+   private void registerEventsIfNeeded() {
+      if (!this.eventsRegistered) {
+         BambooUtils.registerEvent(this);
+         this.eventsRegistered = true;
+      }
+   }
 
+   public void refreshItems() {
+      this.items.forEach((slot, item) -> {
+         ItemStack itemStack = item.getItemStack().clone();
+         if (PlaceholderManager.getInstance().hasPlaceholders(itemStack)) {
+            this.inventory.setItem(slot, PlaceholderManager.getInstance().setPlaceholders(this.owner, itemStack));
+         }
       });
    }
 
    public List<GUIItem> getGUIItems() {
-      return new ArrayList(this.items.values());
+      return new ArrayList<>(this.items.values());
    }
 
    @EventHandler
-   private void onInventoryClick(InventoryClickEvent var1) {
-      if (this.inventory.equals(var1.getView().getTopInventory())) {
-         if (this.inventory.equals(var1.getClickedInventory()) || !this.externalInteract) {
-            var1.setCancelled(true);
+   private void onInventoryClick(InventoryClickEvent event) {
+      if (this.inventory.equals(event.getView().getTopInventory())) {
+         if (this.inventory.equals(event.getClickedInventory()) || !this.externalInteract) {
+            event.setCancelled(true);
          }
 
-         if (this.owner != null && var1.getWhoClicked().getUniqueId().equals(this.owner.getUniqueId())) {
-            if (var1.getCurrentItem() != null && var1.getCurrentItem().getType() != Material.AIR) {
-               GUIItem var2 = this.getItem(var1.getSlot());
-               if (var2 != null) {
-                  var2.executeClickAction(this, var1.getClick());
+         if (this.owner != null && event.getWhoClicked().getUniqueId().equals(this.owner.getUniqueId())) {
+            if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR) {
+               GUIItem item = this.getItem(event.getSlot());
+               if (item != null) {
+                  item.executeClickAction(this, event.getClick());
                }
             }
          }
@@ -187,13 +178,11 @@ public class GUI implements Listener {
    }
 
    @EventHandler
-   private void onInventoryClose(InventoryCloseEvent var1) {
-      if (var1.getInventory().equals(this.inventory) && this.owner != null) {
-         if (var1.getPlayer().getUniqueId().equals(this.owner.getUniqueId())) {
+   private void onInventoryClose(InventoryCloseEvent event) {
+      if (event.getInventory().equals(this.inventory) && this.owner != null) {
+         if (event.getPlayer().getUniqueId().equals(this.owner.getUniqueId())) {
             if (!this.closeable && this.opened) {
-               Bukkit.getScheduler().runTaskLater(BambooLib.getPluginInstance(), () -> {
-                  this.owner.openInventory(this.inventory);
-               }, 5L);
+               Bukkit.getScheduler().runTaskLater(BambooLib.getPluginInstance(), () -> this.owner.openInventory(this.inventory), 5L);
             }
          }
       }
@@ -215,8 +204,8 @@ public class GUI implements Listener {
       return this.closeable;
    }
 
-   public void setCloseable(boolean var1) {
-      this.closeable = var1;
+   public void setCloseable(boolean closeable) {
+      this.closeable = closeable;
    }
 
    public boolean isOpened() {

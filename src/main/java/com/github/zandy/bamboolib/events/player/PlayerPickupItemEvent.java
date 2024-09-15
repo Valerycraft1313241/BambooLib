@@ -13,10 +13,10 @@ public class PlayerPickupItemEvent extends Event implements Cancellable {
    private final int remaining;
    private boolean cancelled = false;
 
-   public PlayerPickupItemEvent(Player var1, Item var2, int var3) {
-      this.player = var1;
-      this.item = var2;
-      this.remaining = var3;
+   public PlayerPickupItemEvent(Player player, Item item, int remaining) {
+      this.player = player;
+      this.item = item;
+      this.remaining = remaining;
    }
 
    public static HandlerList getHandlerList() {

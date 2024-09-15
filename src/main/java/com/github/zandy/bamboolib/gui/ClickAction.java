@@ -8,20 +8,20 @@ import org.bukkit.event.inventory.ClickType;
 public abstract class ClickAction {
    private final List<ClickType> clickTypeList;
 
-   public ClickAction(ClickType var1) {
-      this.clickTypeList = new ArrayList();
-      this.clickTypeList.add(var1);
+   public ClickAction(ClickType clickType) {
+      this.clickTypeList = new ArrayList<>();
+      this.clickTypeList.add(clickType);
    }
 
    public ClickAction() {
-      this.clickTypeList = new ArrayList(Arrays.asList(ClickType.values()));
+      this.clickTypeList = new ArrayList<>(Arrays.asList(ClickType.values()));
    }
 
-   public ClickAction(List<ClickType> var1) {
-      this.clickTypeList = var1;
+   public ClickAction(List<ClickType> clickTypes) {
+      this.clickTypeList = clickTypes;
    }
 
-   public abstract void onClick(GUIItem var1, GUI var2);
+   public abstract void onClick(GUIItem guiItem, GUI gui);
 
    public List<ClickType> getClickTypeList() {
       return this.clickTypeList;

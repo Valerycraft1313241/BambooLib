@@ -29,14 +29,12 @@ public abstract class SubCommand {
          return true;
       } else {
          String[] var2 = this.permissions;
-         int var3 = var2.length;
 
-         for(int var4 = 0; var4 < var3; ++var4) {
-            String var5 = var2[var4];
-            if (var1.hasPermission(var5)) {
-               return true;
-            }
-         }
+          for (String var5 : var2) {
+              if (var1.hasPermission(var5)) {
+                  return true;
+              }
+          }
 
          return false;
       }

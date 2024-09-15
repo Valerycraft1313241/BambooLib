@@ -9,129 +9,104 @@ import java.util.List;
 import java.util.UUID;
 
 public class FlatFile extends Database {
-   private static FlatFile instance = null;
-   private final HashMap<UUID, DatabaseProfile> databaseProfileMap = new HashMap();
+   private static volatile FlatFile instance = null;
+   private final HashMap<UUID, DatabaseProfile> databaseProfileMap = new HashMap<>();
 
    public static FlatFile getInstance() {
       if (instance == null) {
-         instance = new FlatFile();
+         synchronized (FlatFile.class) {
+            if (instance == null) {
+               instance = new FlatFile();
+            }
+         }
       }
-
       return instance;
    }
 
-   public boolean hasAccount(UUID var1, String var2) {
-      return this.getProfile(var1) == null ? false : this.getProfile(var1).contains(var2);
+   public boolean hasAccount(UUID uuid, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return profile != null && profile.contains(key);
    }
 
-   public DatabaseProfile getProfile(UUID var1) {
-      if (this.databaseProfileMap.containsKey(var1)) {
-         return (DatabaseProfile)this.databaseProfileMap.get(var1);
-      } else {
-         DatabaseProfile var2 = new DatabaseProfile(var1.toString());
-         this.databaseProfileMap.put(var1, var2);
-         return var2;
-      }
+   public DatabaseProfile getProfile(UUID uuid) {
+      return databaseProfileMap.computeIfAbsent(uuid, k -> new DatabaseProfile(k.toString()));
    }
 
-   public void createPlayer(UUID var1, String var2, List<ColumnInfo> var3) {
-      var3.stream().filter((var0) -> {
-         return !var0.getColumnName().equalsIgnoreCase("UUID") && !var0.getColumnName().equalsIgnoreCase("Player");
-      }).forEach((var3x) -> {
-         this.getProfile(var1).set(var2 + "." + var3x.getColumnName(), var3x.getValue().replace("'", ""));
-      });
+   public void createPlayer(UUID uuid, String key, List<ColumnInfo> columns) {
+      DatabaseProfile profile = getProfile(uuid);
+      columns.stream()
+              .filter(column -> !column.getColumnName().equalsIgnoreCase("UUID") && !column.getColumnName().equalsIgnoreCase("Player"))
+              .forEach(column -> profile.set(key + "." + column.getColumnName(), column.getValue().replace("'", "")));
    }
 
-   public BambooResultSet getResultSet(UUID var1, String var2) {
-      HashMap var3 = new HashMap();
-      DatabaseProfile var4 = this.getProfile(var1);
-      if (!DatabaseProfile.exists(var1.toString()) && !var4.contains(var2) && var4.getConfigurationSection(var2).getKeys(false).size() != 0) {
-         return new BambooResultSet(var3);
-      } else {
-         var4.getConfigurationSection(var2).getKeys(false).forEach((var3x) -> {
-            var3.put(var3x, var4.get(var2 + "." + var3x));
-         });
-         return new BambooResultSet(var3);
-      }
+   public BambooResultSet getResultSet(UUID uuid, String key) {
+      HashMap<Object, Object> resultMap = new HashMap<>();
+      DatabaseProfile profile = getProfile(uuid);
+       if (DatabaseProfile.exists(uuid.toString()) || profile.contains(key) || !profile.getConfigurationSection(key).getKeys(false).isEmpty()) {
+           profile.getConfigurationSection(key).getKeys(false).forEach(subKey -> resultMap.put(subKey, profile.get(key + "." + subKey)));
+       }
+       return new BambooResultSet(resultMap);
    }
 
-   public boolean contains(UUID var1, String var2) {
-      return !this.hasAccount(var1, var2) ? false : this.getProfile(var1).contains(var2);
+   public boolean contains(UUID uuid, String key) {
+      return hasAccount(uuid, key) && getProfile(uuid).contains(key);
    }
 
-   public String getString(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return "";
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? "" : this.getProfile(var1).getString(var3 + "." + var2);
-      }
+   public String getString(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) ? profile.getString(key + "." + subKey) : "";
    }
 
-   public void setString(UUID var1, String var2, String var3, String var4) {
-      this.getProfile(var1).set(var4 + "." + var3, var2);
+   public void setString(UUID uuid, String value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public boolean getBoolean(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return false;
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? false : this.getProfile(var1).getBoolean(var3 + "." + var2);
-      }
+   public boolean getBoolean(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) && profile.getBoolean(key + "." + subKey);
    }
 
-   public void setBoolean(UUID var1, boolean var2, String var3, String var4) {
-      this.getProfile(var1).set(var4 + "." + var3, var2);
+   public void setBoolean(UUID uuid, boolean value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public int getInt(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return 0;
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? 0 : this.getProfile(var1).getInt(var3 + "." + var2);
-      }
+   public int getInt(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) ? profile.getInt(key + "." + subKey) : 0;
    }
 
-   public void setInt(UUID var1, int var2, String var3, String var4) {
-      this.getProfile(var1).set(var4 + "." + var3, var2);
+   public void setInt(UUID uuid, int value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public long getLong(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return 0L;
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? 0L : this.getProfile(var1).getLong(var3 + "." + var2);
-      }
+   public long getLong(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) ? profile.getLong(key + "." + subKey) : 0L;
    }
 
-   public void setLong(UUID var1, long var2, String var4, String var5) {
-      this.getProfile(var1).set(var5 + "." + var4, var2);
+   public void setLong(UUID uuid, long value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public float getFloat(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return 0.0F;
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? 0.0F : (float)this.getProfile(var1).getDouble(var3 + "." + var2);
-      }
+   public float getFloat(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) ? (float) profile.getDouble(key + "." + subKey) : 0.0F;
    }
 
-   public void setFloat(UUID var1, float var2, String var3, String var4) {
-      this.getProfile(var1).set(var4 + "." + var3, var2);
+   public void setFloat(UUID uuid, float value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public double getDouble(UUID var1, String var2, String var3) {
-      if (!this.hasAccount(var1, var3)) {
-         return 0.0D;
-      } else {
-         return !this.getProfile(var1).contains(var3 + "." + var2) ? 0.0D : this.getProfile(var1).getDouble(var3 + "." + var2);
-      }
+   public double getDouble(UUID uuid, String subKey, String key) {
+      DatabaseProfile profile = getProfile(uuid);
+      return hasAccount(uuid, key) && profile.contains(key + "." + subKey) ? profile.getDouble(key + "." + subKey) : 0.0D;
    }
 
-   public void setDouble(UUID var1, double var2, String var4, String var5) {
-      this.getProfile(var1).set(var5 + "." + var4, var2);
+   public void setDouble(UUID uuid, double value, String subKey, String key) {
+      getProfile(uuid).set(key + "." + subKey, value);
    }
 
-   public void deleteProfile(UUID var1, String var2) {
-      DatabaseProfile.remove(var1.toString());
+   public void deleteProfile(UUID uuid, String key) {
+      DatabaseProfile.remove(uuid.toString());
    }
 }

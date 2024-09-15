@@ -46,7 +46,7 @@ public class Column {
       return this.name;
    }
 
-   public static enum ColumnType {
+   public enum ColumnType {
       VARCHAR,
       LONG_TEXT,
       INT,

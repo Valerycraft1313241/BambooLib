@@ -6,6 +6,7 @@ import com.github.zandy.bamboolib.exceptions.BambooErrorException;
 import com.github.zandy.bamboolib.utils.BambooUtils;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -26,22 +27,21 @@ public class DatabaseLog implements Listener {
    }
 
    @EventHandler
-   private void onDatabaseChange(DatabaseChangeEvent var1) {
-      String var2 = "MySQL-" + this.dateFormat.format(new Date());
-      (new File("plugins/" + this.pluginName + "/Logs")).mkdirs();
-      if (this.file == null || !this.file.getName().contains(var2)) {
-         this.file = new File("plugins/" + this.pluginName + "/Logs", var2 + ".txt");
+   private void onDatabaseChange(DatabaseChangeEvent event) {
+      String fileName = "MySQL-" + this.dateFormat.format(new Date());
+      File logDir = new File("plugins/" + this.pluginName + "/Logs");
+      logDir.mkdirs();
+      if (this.file == null || !this.file.getName().contains(fileName)) {
+         this.file = new File(logDir, fileName + ".txt");
       }
 
-      LocalDateTime var3 = LocalDateTime.now();
+      LocalDateTime now = LocalDateTime.now();
 
-      try {
-         FileWriter var4 = new FileWriter(this.file, true);
-         var4.write("[" + this.dateTimeFormatter.format(var3) + "] Database Action: " + var1.getDatabaseAction() + " | Table: " + var1.getTable() + " | Column: " + var1.getColumn());
-         var4.write("\r\n");
-         var4.close();
-      } catch (Exception var5) {
-         throw new BambooErrorException(var5, this.getClass(), Arrays.asList("Cannot write in the MySQL log.", "Probably, the 'Logs' directory or file is missing."));
+      try (FileWriter writer = new FileWriter(this.file, true)) {
+         writer.write("[" + this.dateTimeFormatter.format(now) + "] Database Action: " + event.getDatabaseAction() + " | Table: " + event.getTable() + " | Column: " + event.getColumn());
+         writer.write(System.lineSeparator());
+      } catch (IOException e) {
+         throw new BambooErrorException(e, this.getClass(), Arrays.asList("Cannot write in the MySQL log.", "Probably, the 'Logs' directory or file is missing."));
       }
    }
 }
