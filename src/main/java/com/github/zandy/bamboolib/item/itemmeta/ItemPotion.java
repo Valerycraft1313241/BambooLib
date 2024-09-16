@@ -12,16 +12,16 @@ public interface ItemPotion {
 
    List<PotionEffect> getCustomEffects();
 
-   ItemBuilder removeCustomEffect(PotionEffectType var1);
+   ItemBuilder removeCustomEffect(PotionEffectType potionEffectType);
 
    boolean hasColor();
 
    Color getColor();
 
-   ItemBuilder setColor(Color var1);
+   ItemBuilder setColor(Color color);
 
-   ItemBuilder setSplash(PotionType var1, boolean var2);
+   ItemBuilder setSplash(PotionType potionType, boolean splash);
 
-   ItemBuilder addCustomEffect(PotionEffect var1);
+   ItemBuilder addCustomEffect(PotionEffect customEffect);
 
 }

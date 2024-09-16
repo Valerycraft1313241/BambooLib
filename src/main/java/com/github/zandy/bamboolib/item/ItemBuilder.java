@@ -120,22 +120,22 @@ public class ItemBuilder {
    public ItemFlags flag() {
       if (this.flag == null) {
          this.flag = new ItemFlags() {
-            public ItemBuilder add(ItemFlag... var1) {
+            public ItemBuilder add(ItemFlag... itemFlags) {
                ItemMeta var2 = ItemBuilder.this.getItemMeta();
-               var2.addItemFlags(var1);
+               var2.addItemFlags(itemFlags);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder remove(ItemFlag... var1) {
+            public ItemBuilder remove(ItemFlag... itemFlags) {
                ItemMeta var2 = ItemBuilder.this.getItemMeta();
                var2.removeItemFlags(new ItemFlag[0]);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public boolean has(ItemFlag var1) {
-               return ItemBuilder.this.getItemMeta().hasItemFlag(var1);
+            public boolean has(ItemFlag itemFlags) {
+               return ItemBuilder.this.getItemMeta().hasItemFlag(itemFlags);
             }
          };
       }
@@ -154,30 +154,30 @@ public class ItemBuilder {
                return ItemBuilder.this.getSkullMeta().hasOwner();
             }
 
-            public ItemBuilder setOwner(String var1) {
+            public ItemBuilder setOwner(String owner) {
                if (!Bukkit.getServer().getOnlineMode() && BambooUtils.isPluginEnabled("SkinsRestorer")) {
-                  return this.setSkin(SkinsRestorerAPI.getApi().getSkinTextureUrl(var1));
+                  return this.setSkin(SkinsRestorerAPI.getApi().getSkinTextureUrl(owner));
                } else {
                   String var2 = ItemBuilder.this.customItem.getType().name();
                    if (var2.equals("PLAYER_HEAD") || var2.equals("SKULL_ITEM")) {
                        SkullMeta var3 = ItemBuilder.this.getSkullMeta();
-                       var3.setOwner(var1);
+                       var3.setOwner(owner);
                        ItemBuilder.this.customItem.setItemMeta(var3);
                    }
                    return ItemBuilder.this.item;
                }
             }
 
-            public ItemBuilder setSkin(String var1) {
+            public ItemBuilder setSkin(String skin) {
                String var2 = ItemBuilder.this.customItem.getType().name();
                if (!var2.equals("PLAYER_HEAD") && !var2.equals("SKULL_ITEM")) {
                   return ItemBuilder.this.item;
-               } else if (var1 == null) {
+               } else if (skin == null) {
                   return ItemBuilder.this.item;
                } else {
                   ItemMeta var3 = ItemBuilder.this.getItemMeta();
                   GameProfile var4 = new GameProfile(ItemBuilder.randomUUID, (String)null);
-                  var4.getProperties().put("textures", new Property("textures", VersionSupport.getInstance().getTexture(var1)));
+                  var4.getProperties().put("textures", new Property("textures", VersionSupport.getInstance().getTexture(skin)));
 
                   try {
                      Field var5 = var3.getClass().getDeclaredField("profile");
@@ -200,21 +200,21 @@ public class ItemBuilder {
    public ItemMetaData metadata() {
       if (this.metaData == null) {
          this.metaData = new ItemMetaData() {
-            public ItemBuilder add(String var1, String var2) {
-               VersionSupport.getInstance().addMetaData(ItemBuilder.this.customItem, var1, var2);
+            public ItemBuilder add(String metadataName, String var2) {
+               VersionSupport.getInstance().addMetaData(ItemBuilder.this.customItem, metadataName, var2);
                return ItemBuilder.this.item;
             }
 
-            public String get(String var1) {
-               return VersionSupport.getInstance().getMetaData(ItemBuilder.this.customItem, var1);
+            public String get(String metadata) {
+               return VersionSupport.getInstance().getMetaData(ItemBuilder.this.customItem, metadata);
             }
 
-            public boolean has(String var1) {
-               return VersionSupport.getInstance().hasMetaData(ItemBuilder.this.customItem, var1);
+            public boolean has(String metadata) {
+               return VersionSupport.getInstance().hasMetaData(ItemBuilder.this.customItem, metadata);
             }
 
-            public ItemBuilder remove(String var1) {
-               VersionSupport.getInstance().removeMetaData(ItemBuilder.this.customItem, var1);
+            public ItemBuilder remove(String metadata) {
+               VersionSupport.getInstance().removeMetaData(ItemBuilder.this.customItem, metadata);
                return ItemBuilder.this.item;
             }
          };
@@ -226,31 +226,31 @@ public class ItemBuilder {
    public ItemEnchantment enchantment() {
       if (this.enchantment == null) {
          this.enchantment = new ItemEnchantment() {
-            public ItemBuilder add(Enchantment var1, int var2) {
-               ItemBuilder.this.customItem.addEnchantment(var1, var2);
+            public ItemBuilder add(Enchantment enchantment, int level) {
+               ItemBuilder.this.customItem.addEnchantment(enchantment, level);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder addUnsafe(Enchantment var1, int var2) {
-               ItemBuilder.this.customItem.addUnsafeEnchantment(var1, var2);
+            public ItemBuilder addUnsafe(Enchantment enchantment, int level) {
+               ItemBuilder.this.customItem.addUnsafeEnchantment(enchantment, level);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder remove(Enchantment var1) {
-               ItemBuilder.this.customItem.removeEnchantment(var1);
+            public ItemBuilder remove(Enchantment enchantment) {
+               ItemBuilder.this.customItem.removeEnchantment(enchantment);
                return ItemBuilder.this.item;
             }
 
-            public int getLevel(Enchantment var1) {
-               return ItemBuilder.this.customItem.getEnchantmentLevel(var1);
+            public int getLevel(Enchantment enchantment) {
+               return ItemBuilder.this.customItem.getEnchantmentLevel(enchantment);
             }
 
             public Map<Enchantment, Integer> getList() {
                return ItemBuilder.this.customItem.getEnchantments();
             }
 
-            public boolean has(Enchantment var1) {
-               return ItemBuilder.this.customItem.containsEnchantment(var1);
+            public boolean has(Enchantment enchantment) {
+               return ItemBuilder.this.customItem.containsEnchantment(enchantment);
             }
          };
       }
@@ -261,30 +261,30 @@ public class ItemBuilder {
    public ItemBanner banner() {
       if (this.banner == null) {
          this.banner = new ItemBanner() {
-            public ItemBuilder setPatterns(List<Pattern> var1) {
+            public ItemBuilder setPatterns(List<Pattern> patternList) {
                BannerMeta var2 = ItemBuilder.this.getBannerMeta();
-               var2.setPatterns(var1);
+               var2.setPatterns(patternList);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder setPattern(int var1, Pattern var2) {
+            public ItemBuilder setPattern(int i, Pattern pattern) {
                BannerMeta var3 = ItemBuilder.this.getBannerMeta();
-               var3.setPattern(var1, var2);
+               var3.setPattern(i, pattern);
                ItemBuilder.this.customItem.setItemMeta(var3);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder addPattern(Pattern var1) {
+            public ItemBuilder addPattern(Pattern pattern) {
                BannerMeta var2 = ItemBuilder.this.getBannerMeta();
-               var2.addPattern(var1);
+               var2.addPattern(pattern);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder removePattern(int var1) {
+            public ItemBuilder removePattern(int i) {
                BannerMeta var2 = ItemBuilder.this.getBannerMeta();
-               var2.removePattern(var1);
+               var2.removePattern(i);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -293,8 +293,8 @@ public class ItemBuilder {
                return ItemBuilder.this.getBannerMeta().getPatterns();
             }
 
-            public Pattern getPattern(int var1) {
-               return ItemBuilder.this.getBannerMeta().getPattern(var1);
+            public Pattern getPattern(int i) {
+               return ItemBuilder.this.getBannerMeta().getPattern(i);
             }
 
             public int getNumberOfPatterns() {
@@ -318,9 +318,9 @@ public class ItemBuilder {
                return ItemBuilder.this.getBookMeta().getTitle();
             }
 
-            public ItemBuilder setTitle(String var1) {
+            public ItemBuilder setTitle(String title) {
                BookMeta var2 = ItemBuilder.this.getBookMeta();
-               var2.setTitle(var1);
+               var2.setTitle(title);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -333,9 +333,9 @@ public class ItemBuilder {
                return ItemBuilder.this.getBookMeta().getAuthor();
             }
 
-            public ItemBuilder setAuthor(String var1) {
+            public ItemBuilder setAuthor(String author) {
                BookMeta var2 = ItemBuilder.this.getBookMeta();
-               var2.setAuthor(var1);
+               var2.setAuthor(author);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -344,13 +344,13 @@ public class ItemBuilder {
                return ItemBuilder.this.getBookMeta().hasPages();
             }
 
-            public String getPage(int var1) {
-               return ItemBuilder.this.getBookMeta().getPage(var1);
+            public String getPage(int page) {
+               return ItemBuilder.this.getBookMeta().getPage(page);
             }
 
-            public ItemBuilder setPage(int var1, String var2) {
+            public ItemBuilder setPage(int page, String s) {
                BookMeta var3 = ItemBuilder.this.getBookMeta();
-               var3.setPage(var1, var2);
+               var3.setPage(page, s);
                ItemBuilder.this.customItem.setItemMeta(var3);
                return ItemBuilder.this.item;
             }
@@ -359,16 +359,16 @@ public class ItemBuilder {
                return ItemBuilder.this.getBookMeta().getPages();
             }
 
-            public ItemBuilder setPages(List<String> var1) {
+            public ItemBuilder setPages(List<String> pages) {
                BookMeta var2 = ItemBuilder.this.getBookMeta();
-               var2.setPages(var1);
+               var2.setPages(pages);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder addPages(String... var1) {
+            public ItemBuilder addPages(String... pages) {
                BookMeta var2 = ItemBuilder.this.getBookMeta();
-               var2.addPage(var1);
+               var2.addPage(pages);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -385,16 +385,16 @@ public class ItemBuilder {
    public ItemFirework firework() {
       if (this.firework == null) {
          this.firework = new ItemFirework() {
-            public ItemBuilder addEffect(FireworkEffect var1) {
+            public ItemBuilder addEffect(FireworkEffect fireworkEffect) {
                FireworkMeta var2 = ItemBuilder.this.getFireworkMeta();
-               var2.addEffect(var1);
+               var2.addEffect(fireworkEffect);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder addEffects(FireworkEffect... var1) {
+            public ItemBuilder addEffects(FireworkEffect... fireworkEffect) {
                FireworkMeta var2 = ItemBuilder.this.getFireworkMeta();
-               var2.addEffects(var1);
+               var2.addEffects(fireworkEffect);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -407,9 +407,9 @@ public class ItemBuilder {
                return ItemBuilder.this.getFireworkMeta().getEffectsSize();
             }
 
-            public ItemBuilder removeEffect(int var1) {
+            public ItemBuilder removeEffect(int number) {
                FireworkMeta var2 = ItemBuilder.this.getFireworkMeta();
-               var2.removeEffect(var1);
+               var2.removeEffect(number);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -429,16 +429,16 @@ public class ItemBuilder {
                return ItemBuilder.this.getFireworkMeta().getPower();
             }
 
-            public ItemBuilder setPower(int var1) {
+            public ItemBuilder setPower(int power) {
                FireworkMeta var2 = ItemBuilder.this.getFireworkMeta();
-               var2.setPower(var1);
+               var2.setPower(power);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
 
-            public ItemBuilder setEffect(FireworkEffect var1) {
+            public ItemBuilder setEffect(FireworkEffect fireworkEffect) {
                FireworkEffectMeta var2 = ItemBuilder.this.getFireworkEffectMeta();
-               var2.setEffect(var1);
+               var2.setEffect(fireworkEffect);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -463,9 +463,9 @@ public class ItemBuilder {
                return ItemBuilder.this.getLeatherArmorMeta().getColor();
             }
 
-            public ItemBuilder setColor(Color var1) {
+            public ItemBuilder setColor(Color color) {
                LeatherArmorMeta var2 = ItemBuilder.this.getLeatherArmorMeta();
-               var2.setColor(var1);
+               var2.setColor(color);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }
@@ -482,9 +482,9 @@ public class ItemBuilder {
                return ItemBuilder.this.getMapMeta().isScaling();
             }
 
-            public ItemBuilder setScaling(boolean var1) {
+            public ItemBuilder setScaling(boolean scaling) {
                MapMeta var2 = ItemBuilder.this.getMapMeta();
-               var2.setScaling(var1);
+               var2.setScaling(scaling);
                ItemBuilder.this.customItem.setItemMeta(var2);
                return ItemBuilder.this.item;
             }

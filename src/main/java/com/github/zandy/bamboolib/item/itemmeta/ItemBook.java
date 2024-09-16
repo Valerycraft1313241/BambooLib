@@ -8,25 +8,25 @@ public interface ItemBook {
 
    String getTitle();
 
-   ItemBuilder setTitle(String var1);
+   ItemBuilder setTitle(String title);
 
    boolean hasAuthor();
 
    String getAuthor();
 
-   ItemBuilder setAuthor(String var1);
+   ItemBuilder setAuthor(String author);
 
    boolean hasPages();
 
-   String getPage(int var1);
+   String getPage(int page);
 
-   ItemBuilder setPage(int var1, String var2);
+   ItemBuilder setPage(int page, String s);
 
    List<String> getPages();
 
-   ItemBuilder setPages(List<String> var1);
+   ItemBuilder setPages(List<String> pages);
 
-   ItemBuilder addPages(String... var1);
+   ItemBuilder addPages(String... pages);
 
    int getPageCount();
 }

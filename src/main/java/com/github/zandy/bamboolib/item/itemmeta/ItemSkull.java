@@ -8,7 +8,7 @@ public interface ItemSkull {
 
    boolean hasOwner();
 
-   ItemBuilder setOwner(String var1);
+   ItemBuilder setOwner(String owner);
 
-   ItemBuilder setSkin(String var1);
+   ItemBuilder setSkin(String skin);
 }

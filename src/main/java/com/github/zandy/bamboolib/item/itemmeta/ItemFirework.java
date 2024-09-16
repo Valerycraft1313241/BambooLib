@@ -5,15 +5,15 @@ import java.util.List;
 import org.bukkit.FireworkEffect;
 
 public interface ItemFirework {
-   ItemBuilder addEffect(FireworkEffect var1);
+   ItemBuilder addEffect(FireworkEffect fireworkEffect);
 
-   ItemBuilder addEffects(FireworkEffect... var1);
+   ItemBuilder addEffects(FireworkEffect... fireworkEffect);
 
    List<FireworkEffect> getEffects();
 
    int getEffectsSize();
 
-   ItemBuilder removeEffect(int var1);
+   ItemBuilder removeEffect(int number);
 
    ItemBuilder clearEffects();
 
@@ -21,9 +21,9 @@ public interface ItemFirework {
 
    int getPower();
 
-   ItemBuilder setPower(int var1);
+   ItemBuilder setPower(int power);
 
-   ItemBuilder setEffect(FireworkEffect var1);
+   ItemBuilder setEffect(FireworkEffect fireworkEffect);
 
    boolean hasEffect();
 

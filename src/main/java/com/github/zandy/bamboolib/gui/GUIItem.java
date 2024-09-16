@@ -40,14 +40,14 @@ public class GUIItem {
       inventory.setItem(this.slot, itemStack);
    }
 
-   public void editItemStack(ItemStack var1) {
-      this.itemStack = var1;
+   public void editItemStack(ItemStack itemStack) {
+      this.itemStack = itemStack;
    }
 
    public void executeClickAction(GUI gui, ClickType clickType) {
       if (!this.clickActionList.isEmpty()) {
-         this.clickActionList.stream().filter((var1x) -> var1x.getClickTypeList().contains(clickType)).forEach((var2x) -> {
-            var2x.onClick(this, gui);
+         this.clickActionList.stream().filter((clickAction) -> clickAction.getClickTypeList().contains(clickType)).forEach((clickAction) -> {
+            clickAction.onClick(this, gui);
          });
       }
    }

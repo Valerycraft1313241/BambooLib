@@ -7,12 +7,12 @@ public class BambooDate {
    final int month;
    final int year;
 
-   public BambooDate(long var1) {
-      Calendar var3 = Calendar.getInstance();
-      var3.setTimeInMillis(var1);
-      this.day = var3.get(Calendar.DATE);
-      this.month = var3.get(Calendar.MONTH) + 1;
-      this.year = var3.get(Calendar.YEAR);
+   public BambooDate(long timestamp) {
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTimeInMillis(timestamp);
+      this.day = calendar.get(Calendar.DATE);
+      this.month = calendar.get(Calendar.MONTH) + 1;
+      this.year = calendar.get(Calendar.YEAR);
    }
 
    public int getDay() {

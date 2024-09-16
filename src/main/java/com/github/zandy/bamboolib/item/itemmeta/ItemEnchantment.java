@@ -5,15 +5,15 @@ import java.util.Map;
 import org.bukkit.enchantments.Enchantment;
 
 public interface ItemEnchantment {
-   int getLevel(Enchantment var1);
+   int getLevel(Enchantment enchantment);
 
-   ItemBuilder add(Enchantment var1, int var2);
+   ItemBuilder add(Enchantment enchantment, int level);
 
-   ItemBuilder addUnsafe(Enchantment var1, int var2);
+   ItemBuilder addUnsafe(Enchantment enchantment, int level);
 
-   ItemBuilder remove(Enchantment var1);
+   ItemBuilder remove(Enchantment enchantment);
 
    Map<Enchantment, Integer> getList();
 
-   boolean has(Enchantment var1);
+   boolean has(Enchantment enchantment);
 }

@@ -5,35 +5,35 @@ public class MP {
    private String material;
    private int id;
    private int data;
-   private boolean placeholder;
+   private boolean isPlaceholder;
 
-   public MP(String var1) {
+   public MP(String material) {
       this.prepType = MP.PrepType.MAT;
-      this.material = var1;
+      this.material = material;
    }
 
-   public MP(int var1) {
+   public MP(int id) {
       this.prepType = MP.PrepType.ID;
-      this.id = var1;
+      this.id = id;
    }
 
-   public MP(int var1, boolean var2) {
+   public MP(int id, boolean isPlaceholder) {
       this.prepType = MP.PrepType.ID;
-      this.id = var1;
-      this.placeholder = var2;
+      this.id = id;
+      this.isPlaceholder = isPlaceholder;
    }
 
-   public MP(int var1, int var2) {
+   public MP(int id, int data) {
       this.prepType = MP.PrepType.ID_DATA;
-      this.id = var1;
-      this.data = var2;
+      this.id = id;
+      this.data = data;
    }
 
-   public MP(int var1, int var2, boolean var3) {
+   public MP(int id, int data, boolean isPlaceholder) {
       this.prepType = MP.PrepType.ID_DATA;
-      this.id = var1;
-      this.data = var2;
-      this.placeholder = var3;
+      this.id = id;
+      this.data = data;
+      this.isPlaceholder = isPlaceholder;
    }
 
    public MP.PrepType getPrepType() {
@@ -53,7 +53,7 @@ public class MP {
    }
 
    public boolean isPlaceholder() {
-      return this.placeholder;
+      return this.isPlaceholder;
    }
 
    public enum PrepType {

@@ -5,5 +5,5 @@ import com.github.zandy.bamboolib.item.ItemBuilder;
 public interface ItemMap {
    boolean isScaling();
 
-   ItemBuilder setScaling(boolean var1);
+   ItemBuilder setScaling(boolean scaling);
 }

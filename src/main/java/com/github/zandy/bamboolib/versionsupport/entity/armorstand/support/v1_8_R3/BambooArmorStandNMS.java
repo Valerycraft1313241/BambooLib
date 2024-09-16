@@ -18,15 +18,15 @@ import org.bukkit.util.EulerAngle;
 public class BambooArmorStandNMS extends BambooArmorStand {
    private final CraftArmorStand craftArmorStand;
    private final Player player;
-   private final int id;
+   private final int entityId;
 
-   public BambooArmorStandNMS(Player var1, String var2, Location var3) {
-      super(var2, var3);
-      EntityArmorStand var4 = new EntityArmorStand(((CraftWorld)var1.getWorld()).getHandle());
-      var4.setLocation(var3.getX(), var3.getY(), var3.getZ(), var3.getYaw(), var3.getPitch());
-      this.craftArmorStand = (CraftArmorStand)var4.getBukkitEntity();
-      this.player = var1;
-      this.id = var4.getId();
+   public BambooArmorStandNMS(Player player, String customName, Location location) {
+      super(customName, location);
+      EntityArmorStand entityArmorStand = new EntityArmorStand(((CraftWorld) player.getWorld()).getHandle());
+      entityArmorStand.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+      this.craftArmorStand = (CraftArmorStand) entityArmorStand.getBukkitEntity();
+      this.player = player;
+      this.entityId = entityArmorStand.getId();
       this.sendSpawnPacket();
    }
 
@@ -35,11 +35,11 @@ public class BambooArmorStandNMS extends BambooArmorStand {
    }
 
    public ArmorStand getRawArmorStand() {
-      return (ArmorStand)this.craftArmorStand.getHandle().getBukkitEntity();
+      return (ArmorStand) this.craftArmorStand.getHandle().getBukkitEntity();
    }
 
-   public void setCustomName(String var1) {
-      this.craftArmorStand.setCustomName(var1);
+   public void setCustomName(String customName) {
+      this.craftArmorStand.setCustomName(customName);
       this.sendMetadataPacket();
    }
 
@@ -47,8 +47,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getCustomName();
    }
 
-   public void setCustomNameVisible(boolean var1) {
-      this.craftArmorStand.setCustomNameVisible(var1);
+   public void setCustomNameVisible(boolean isVisible) {
+      this.craftArmorStand.setCustomNameVisible(isVisible);
       this.sendMetadataPacket();
    }
 
@@ -56,31 +56,31 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.isCustomNameVisible();
    }
 
-   public void setGravity(boolean var1) {
-      this.craftArmorStand.setGravity(var1);
+   public void setGravity(boolean hasGravity) {
+      this.craftArmorStand.setGravity(hasGravity);
       this.sendMetadataPacket();
    }
 
-   public void setInvulnerable(BambooArmorStand var1, boolean var2) {
+   public void setInvulnerable(BambooArmorStand armorStand, boolean isInvulnerable) {
       this.sendMetadataPacket();
    }
 
    public void remove() {
       this.craftArmorStand.remove();
-      ((CraftPlayer)this.player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(new int[]{this.id}));
+      ((CraftPlayer) this.player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(new int[]{this.entityId}));
    }
 
    @Override
    public void setInvulnerable() {
-
+      // Implementation here
    }
 
    public ItemStack getItemInHand() {
       return this.craftArmorStand.getItemInHand();
    }
 
-   public void setItemInHand(ItemStack var1) {
-      this.craftArmorStand.setItemInHand(var1);
+   public void setItemInHand(ItemStack itemStack) {
+      this.craftArmorStand.setItemInHand(itemStack);
       this.sendMetadataPacket();
    }
 
@@ -88,8 +88,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getBoots();
    }
 
-   public void setBoots(ItemStack var1) {
-      this.craftArmorStand.setBoots(var1);
+   public void setBoots(ItemStack boots) {
+      this.craftArmorStand.setBoots(boots);
       this.sendMetadataPacket();
    }
 
@@ -97,8 +97,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getLeggings();
    }
 
-   public void setLeggings(ItemStack var1) {
-      this.craftArmorStand.setLeggings(var1);
+   public void setLeggings(ItemStack leggings) {
+      this.craftArmorStand.setLeggings(leggings);
       this.sendMetadataPacket();
    }
 
@@ -106,8 +106,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getChestplate();
    }
 
-   public void setChestplate(ItemStack var1) {
-      this.craftArmorStand.setChestplate(var1);
+   public void setChestplate(ItemStack chestplate) {
+      this.craftArmorStand.setChestplate(chestplate);
       this.sendMetadataPacket();
    }
 
@@ -115,8 +115,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getHelmet();
    }
 
-   public void setHelmet(ItemStack var1) {
-      this.craftArmorStand.setHelmet(var1);
+   public void setHelmet(ItemStack helmet) {
+      this.craftArmorStand.setHelmet(helmet);
       this.sendMetadataPacket();
    }
 
@@ -124,8 +124,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getBodyPose();
    }
 
-   public void setBodyPose(EulerAngle var1) {
-      this.craftArmorStand.setBodyPose(var1);
+   public void setBodyPose(EulerAngle bodyPose) {
+      this.craftArmorStand.setBodyPose(bodyPose);
       this.sendMetadataPacket();
    }
 
@@ -133,8 +133,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getLeftArmPose();
    }
 
-   public void setLeftArmPose(EulerAngle var1) {
-      this.craftArmorStand.setLeftArmPose(var1);
+   public void setLeftArmPose(EulerAngle leftArmPose) {
+      this.craftArmorStand.setLeftArmPose(leftArmPose);
       this.sendMetadataPacket();
    }
 
@@ -142,8 +142,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getRightArmPose();
    }
 
-   public void setRightArmPose(EulerAngle var1) {
-      this.craftArmorStand.setRightArmPose(var1);
+   public void setRightArmPose(EulerAngle rightArmPose) {
+      this.craftArmorStand.setRightArmPose(rightArmPose);
       this.sendMetadataPacket();
    }
 
@@ -151,8 +151,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getLeftLegPose();
    }
 
-   public void setLeftLegPose(EulerAngle var1) {
-      this.craftArmorStand.setLeftLegPose(var1);
+   public void setLeftLegPose(EulerAngle leftLegPose) {
+      this.craftArmorStand.setLeftLegPose(leftLegPose);
       this.sendMetadataPacket();
    }
 
@@ -160,8 +160,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getRightLegPose();
    }
 
-   public void setRightLegPose(EulerAngle var1) {
-      this.craftArmorStand.setRightLegPose(var1);
+   public void setRightLegPose(EulerAngle rightLegPose) {
+      this.craftArmorStand.setRightLegPose(rightLegPose);
       this.sendMetadataPacket();
    }
 
@@ -169,8 +169,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.getHeadPose();
    }
 
-   public void setHeadPose(EulerAngle var1) {
-      this.craftArmorStand.setHeadPose(var1);
+   public void setHeadPose(EulerAngle headPose) {
+      this.craftArmorStand.setHeadPose(headPose);
       this.sendMetadataPacket();
    }
 
@@ -178,8 +178,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.hasBasePlate();
    }
 
-   public void setBasePlate(boolean var1) {
-      this.craftArmorStand.setBasePlate(var1);
+   public void setBasePlate(boolean hasBasePlate) {
+      this.craftArmorStand.setBasePlate(hasBasePlate);
       this.sendMetadataPacket();
    }
 
@@ -187,8 +187,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.isVisible();
    }
 
-   public void setVisible(boolean var1) {
-      this.craftArmorStand.setVisible(var1);
+   public void setVisible(boolean isVisible) {
+      this.craftArmorStand.setVisible(isVisible);
       this.sendMetadataPacket();
    }
 
@@ -196,8 +196,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.hasArms();
    }
 
-   public void setArms(boolean var1) {
-      this.craftArmorStand.setArms(var1);
+   public void setArms(boolean hasArms) {
+      this.craftArmorStand.setArms(hasArms);
       this.sendMetadataPacket();
    }
 
@@ -205,8 +205,8 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.isSmall();
    }
 
-   public void setSmall(boolean var1) {
-      this.craftArmorStand.setSmall(var1);
+   public void setSmall(boolean isSmall) {
+      this.craftArmorStand.setSmall(isSmall);
       this.sendMetadataPacket();
    }
 
@@ -214,13 +214,13 @@ public class BambooArmorStandNMS extends BambooArmorStand {
       return this.craftArmorStand.isMarker();
    }
 
-   public void setHitBox(boolean var1) {
-      this.craftArmorStand.setMarker(var1);
+   public void setHitBox(boolean hasHitBox) {
+      this.craftArmorStand.setMarker(hasHitBox);
       this.sendMetadataPacket();
    }
 
    private void sendMetadataPacket() {
-      v1_8_R3.sendPacket(this.player, new PacketPlayOutEntityMetadata(this.id, this.craftArmorStand.getHandle().getDataWatcher(), false));
+      v1_8_R3.sendPacket(this.player, new PacketPlayOutEntityMetadata(this.entityId, this.craftArmorStand.getHandle().getDataWatcher(), false));
    }
 
    private void sendSpawnPacket() {

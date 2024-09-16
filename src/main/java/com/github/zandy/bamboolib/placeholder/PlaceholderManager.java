@@ -5,7 +5,6 @@ import com.github.zandy.bamboolib.placeholder.utils.Placeholder;
 import com.github.zandy.bamboolib.utils.BambooUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlaceholderManager {
    private static PlaceholderManager instance = null;
-   private final HashMap<String, Placeholder> placeholderMap = new HashMap();
+   private final HashMap<String, Placeholder> placeholderMap = new HashMap<>();
    private boolean placeholderAPIEnabled = false;
    private static String identifier;
 
@@ -22,108 +21,91 @@ public class PlaceholderManager {
          this.placeholderAPIEnabled = true;
          PlaceholderAPISupport.getInstance().register();
       }
-
    }
 
-   public String formatPlaceholder(String var1) {
-      return "%" + getIdentifier() + "_" + var1 + "%";
+   public String formatPlaceholder(String placeholder) {
+      return "%" + getIdentifier() + "_" + placeholder + "%";
    }
 
-   public void addPlaceholder(Placeholder var1) {
-      this.placeholderMap.put(var1.getName(), var1);
+   public void addPlaceholder(Placeholder placeholder) {
+      this.placeholderMap.put(placeholder.getName(), placeholder);
    }
 
-   public String setPlaceholders(Player var1, String var2) {
-      var2 = BambooUtils.colorize(var2);
+   public String setPlaceholders(Player player, String text) {
+      text = BambooUtils.colorize(text);
       if (this.placeholderAPIEnabled) {
-         return PlaceholderAPISupport.setPlaceholders(var1, var2);
+         return PlaceholderAPISupport.setPlaceholders(player, text);
       } else {
-         String var3 = var2;
-         Iterator var4 = this.placeholderMap.keySet().iterator();
+         String formattedText = text;
 
-         while(var4.hasNext()) {
-            String var5 = (String)var4.next();
-            Placeholder var6 = (Placeholder)this.placeholderMap.get(var5);
-            String var7 = var6.request(var1);
-            if (var7 == null) {
-               var7 = var6.request();
+         for (String key : this.placeholderMap.keySet()) {
+            Placeholder placeholder = this.placeholderMap.get(key);
+            String value = placeholder.request(player);
+            if (value == null) {
+               value = placeholder.request();
             }
 
-            if (var7 != null) {
-               var3 = var3.replace(this.formatPlaceholder(var5), var7);
+            if (value != null) {
+               formattedText = formattedText.replace(this.formatPlaceholder(key), value);
             }
          }
 
-         return var3;
+         return formattedText;
       }
    }
 
-   public List<String> setPlaceholders(Player var1, List<String> var2) {
-      ArrayList var3 = new ArrayList();
-      var2.forEach((var3x) -> {
-         var3.add(this.setPlaceholders(var1, var3x));
+   public List<String> setPlaceholders(Player player, List<String> texts) {
+      List<String> formattedTexts = new ArrayList<>();
+      texts.forEach((text) -> {
+         formattedTexts.add(this.setPlaceholders(player, text));
       });
-      return var3;
+      return formattedTexts;
    }
 
-   public ItemStack setPlaceholders(Player var1, ItemStack var2) {
-      if (!var2.hasItemMeta()) {
-         return var2;
-      } else {
-         ItemMeta var3 = var2.getItemMeta();
-         if (var3.hasDisplayName()) {
-            var3.setDisplayName(this.setPlaceholders(var1, var3.getDisplayName()));
+   public ItemStack setPlaceholders(Player player, ItemStack item) {
+      if (item.hasItemMeta()) {
+         ItemMeta meta = item.getItemMeta();
+         if (meta.hasDisplayName()) {
+            meta.setDisplayName(this.setPlaceholders(player, meta.getDisplayName()));
          }
 
-         if (var3.hasLore()) {
-            var3.setLore(this.setPlaceholders(var1, var3.getLore()));
+         if (meta.hasLore()) {
+            meta.setLore(this.setPlaceholders(player, meta.getLore()));
          }
 
-         var2.setItemMeta(var3);
-         return var2;
+         item.setItemMeta(meta);
       }
+      return item;
    }
 
-   public boolean hasPlaceholders(String var1) {
+   public boolean hasPlaceholders(String text) {
       if (this.placeholderAPIEnabled) {
-         return PlaceholderAPISupport.hasPlaceholders(var1);
+         return PlaceholderAPISupport.hasPlaceholders(text);
       } else {
-         Iterator var2 = this.placeholderMap.keySet().iterator();
-
-         String var3;
-         do {
-            if (!var2.hasNext()) {
-               return false;
+         for (String key : this.placeholderMap.keySet()) {
+            if (text.contains(this.formatPlaceholder(key))) {
+               return true;
             }
-
-            var3 = (String)var2.next();
-         } while(!var1.contains(this.formatPlaceholder(var3)));
-
-         return true;
+         }
+         return false;
       }
    }
 
-   public boolean hasPlaceholders(List<String> var1) {
-      Iterator var2 = var1.iterator();
-
-      String var3;
-      do {
-         if (!var2.hasNext()) {
-            return false;
+   public boolean hasPlaceholders(List<String> texts) {
+      for (String text : texts) {
+         if (this.hasPlaceholders(text)) {
+            return true;
          }
-
-         var3 = (String)var2.next();
-      } while(!this.hasPlaceholders(var3));
-
-      return true;
+      }
+      return false;
    }
 
-   public boolean hasPlaceholders(ItemStack var1) {
-      if (!var1.hasItemMeta()) {
+   public boolean hasPlaceholders(ItemStack item) {
+      if (!item.hasItemMeta()) {
          return false;
       } else {
-         ItemMeta var2 = var1.getItemMeta();
-         return var2.hasDisplayName() && this.hasPlaceholders(var2.getDisplayName()) || var2.hasLore() && this.hasPlaceholders(var2.getLore());
+         ItemMeta meta = item.getItemMeta();
+         return (meta.hasDisplayName() && this.hasPlaceholders(meta.getDisplayName())) || (meta.hasLore() && this.hasPlaceholders(meta.getLore()));
       }
    }
 
@@ -131,7 +113,6 @@ public class PlaceholderManager {
       if (instance == null) {
          instance = new PlaceholderManager();
       }
-
       return instance;
    }
 
@@ -147,7 +128,7 @@ public class PlaceholderManager {
       return identifier;
    }
 
-   public static void setIdentifier(String var0) {
-      identifier = var0;
+   public static void setIdentifier(String newIdentifier) {
+      identifier = newIdentifier;
    }
 }

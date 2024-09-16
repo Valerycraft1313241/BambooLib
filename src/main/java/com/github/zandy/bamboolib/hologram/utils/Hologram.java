@@ -11,7 +11,7 @@ public abstract class Hologram {
 
    public abstract Hologram remove();
 
-   public static enum HologramType {
+   public enum HologramType {
       GLOBAL,
       INDIVIDUAL;
    }

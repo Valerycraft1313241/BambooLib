@@ -6,5 +6,5 @@ import org.bukkit.Color;
 public interface ItemLeatherArmor {
    Color getColor();
 
-   ItemBuilder setColor(Color var1);
+   ItemBuilder setColor(Color color);
 }

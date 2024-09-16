@@ -17,38 +17,38 @@ public class StaticHologram extends Hologram {
    private final Location baseLocation;
    private Player player;
 
-   public StaticHologram(Player var1, String var2, Location var3, List<String> var4) {
+   public StaticHologram(Player player, String id, Location baseLocation, List<String> lines) {
       this.hologramType = Hologram.HologramType.INDIVIDUAL;
-      this.id = var2;
-      this.baseLocation = var3;
-      this.player = var1;
-      this.init(var4);
+      this.id = id;
+      this.baseLocation = baseLocation;
+      this.player = player;
+      this.init(lines);
    }
 
-   public StaticHologram(String var1, Location var2, List<String> var3) {
+   public StaticHologram(String id, Location baseLocation, List<String> lines) {
       this.hologramType = Hologram.HologramType.GLOBAL;
-      this.id = var1;
-      this.baseLocation = var2;
-      this.init(var3);
+      this.id = id;
+      this.baseLocation = baseLocation;
+      this.init(lines);
    }
 
-   private void init(List<String> var1) {
-      Location var2 = this.baseLocation.clone().add(0.0D, 0.23D * (double)var1.size() - 1.97D, 0.0D);
+   private void init(List<String> lines) {
+      Location currentLocation = this.baseLocation.clone().add(0.0D, 0.23D * (double)lines.size() - 1.97D, 0.0D);
 
-      for(int var3 = 0; var3 < var1.size(); ++var3) {
-         this.addLine(var3, var2, var1.get(var3));
-         var2.subtract(0.0D, 0.23D, 0.0D);
+      for(int i = 0; i < lines.size(); ++i) {
+         this.addLine(i, currentLocation, lines.get(i));
+         currentLocation.subtract(0.0D, 0.23D, 0.0D);
       }
 
    }
 
-   public Hologram addLine(int var1, Location var2, String var3) {
-      BambooArmorStand var4 = this.hologramType.equals(Hologram.HologramType.GLOBAL) ? new BambooArmorStandBukkit(this.id + "_" + var1, var2) : VersionSupport.getInstance().getArmorStandVersionClass(this.player, this.id + "_" + var1, var2);
-      var4.setCustomName(BambooUtils.colorize(var3));
-      var4.setCustomNameVisible(true);
-      var4.setGravity(false);
-      var4.setVisible(false);
-      this.textLines.add(var4);
+   public Hologram addLine(int index, Location location, String text) {
+      BambooArmorStand armorStand = this.hologramType.equals(Hologram.HologramType.GLOBAL) ? new BambooArmorStandBukkit(this.id + "_" + index, location) : VersionSupport.getInstance().getArmorStandVersionClass(this.player, this.id + "_" + index, location);
+      armorStand.setCustomName(BambooUtils.colorize(text));
+      armorStand.setCustomNameVisible(true);
+      armorStand.setGravity(false);
+      armorStand.setVisible(false);
+      this.textLines.add(armorStand);
       return this;
    }
 

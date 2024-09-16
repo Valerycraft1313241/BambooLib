@@ -5,17 +5,17 @@ import java.util.List;
 import org.bukkit.block.banner.Pattern;
 
 public interface ItemBanner {
-   ItemBuilder setPatterns(List<Pattern> var1);
+   ItemBuilder setPatterns(List<Pattern> patternList);
 
-   ItemBuilder setPattern(int var1, Pattern var2);
+   ItemBuilder setPattern(int i, Pattern pattern);
 
-   ItemBuilder addPattern(Pattern var1);
+   ItemBuilder addPattern(Pattern pattern);
 
-   ItemBuilder removePattern(int var1);
+   ItemBuilder removePattern(int i);
 
    List<Pattern> getPatterns();
 
-   Pattern getPattern(int var1);
+   Pattern getPattern(int i);
 
    int getNumberOfPatterns();
 }

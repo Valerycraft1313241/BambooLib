@@ -27,53 +27,53 @@ public class RefreshableHologram extends Hologram {
    private final int refreshTick;
    private Player player;
 
-   public RefreshableHologram(Player var1, String var2, Location var3, List<String> var4, List<RefreshablePlaceholder> var5, int var6) {
+   public RefreshableHologram(Player player, String id, Location baseLocation, List<String> lines, List<RefreshablePlaceholder> placeholders, int refreshTick) {
       this.hologramType = Hologram.HologramType.INDIVIDUAL;
       this.placeholderLines = new ArrayList<>();
-      this.placeholders = var5;
+      this.placeholders = placeholders;
       this.tasksList = new ArrayList<>();
       this.placeholderMap = new HashMap<>();
-      this.id = var2;
-      this.baseLocation = var3;
-      this.player = var1;
-      this.refreshTick = var6;
-      this.init(var4);
+      this.id = id;
+      this.baseLocation = baseLocation;
+      this.player = player;
+      this.refreshTick = refreshTick;
+      this.init(lines);
    }
 
-   public RefreshableHologram(String var1, Location var2, List<String> var3, List<RefreshablePlaceholder> var4, int var5) {
+   public RefreshableHologram(String id, Location baseLocation, List<String> lines, List<RefreshablePlaceholder> placeholders, int refreshTick) {
       this.hologramType = Hologram.HologramType.GLOBAL;
       this.placeholderLines = new ArrayList<>();
-      this.placeholders = var4;
+      this.placeholders = placeholders;
       this.tasksList = new ArrayList<>();
       this.placeholderMap = new HashMap<>();
-      this.id = var1;
-      this.baseLocation = var2;
-      this.refreshTick = var5;
-      this.init(var3);
+      this.id = id;
+      this.baseLocation = baseLocation;
+      this.refreshTick = refreshTick;
+      this.init(lines);
    }
 
-   private void init(List<String> var1) {
-      Location var2 = this.baseLocation.clone().add(0.0D, 0.23D * (double)var1.size() - 1.97D, 0.0D);
+   private void init(List<String> lines) {
+      Location currentLocation = this.baseLocation.clone().add(0.0D, 0.23D * (double)lines.size() - 1.97D, 0.0D);
 
-      for(int var3 = 0; var3 < var1.size(); ++var3) {
-         this.addLine(var3, var2, var1.get(var3));
-         var2.subtract(0.0D, 0.23D, 0.0D);
+      for(int i = 0; i < lines.size(); ++i) {
+         this.addLine(i, currentLocation, lines.get(i));
+         currentLocation.subtract(0.0D, 0.23D, 0.0D);
       }
 
       this.refresh();
    }
 
-   public Hologram addLine(int var1, Location var2, String var3) {
-      BambooArmorStand var4 = this.hologramType.equals(Hologram.HologramType.GLOBAL) ? new BambooArmorStandBukkit(this.id + "_" + var1, var2) : VersionSupport.getInstance().getArmorStandVersionClass(this.player, this.id + "_" + var1, var2);
-      var4.setCustomName(BambooUtils.colorize(var3));
-      var4.setGravity(false);
-      var4.setVisible(false);
-      this.textLines.add(var4);
-      this.placeholders.forEach((var3x) -> {
-         var4.setCustomNameVisible(true);
-         if (var3.contains(var3x.getPlaceholder())) {
-            this.placeholderLines.add(var4);
-            this.placeholderMap.put(var4, var4.getCustomName());
+   public Hologram addLine(int index, Location location, String text) {
+      BambooArmorStand armorStand = this.hologramType.equals(Hologram.HologramType.GLOBAL) ? new BambooArmorStandBukkit(this.id + "_" + index, location) : VersionSupport.getInstance().getArmorStandVersionClass(this.player, this.id + "_" + index, location);
+      armorStand.setCustomName(BambooUtils.colorize(text));
+      armorStand.setGravity(false);
+      armorStand.setVisible(false);
+      this.textLines.add(armorStand);
+      this.placeholders.forEach((placeholder) -> {
+         armorStand.setCustomNameVisible(true);
+         if (text.contains(placeholder.getPlaceholder())) {
+            this.placeholderLines.add(armorStand);
+            this.placeholderMap.put(armorStand, armorStand.getCustomName());
          }
 
       });
@@ -81,23 +81,23 @@ public class RefreshableHologram extends Hologram {
    }
 
    public Hologram refresh() {
-      BukkitTask var = Bukkit.getScheduler().runTaskTimer(BambooLib.getPluginInstance(), () -> {
+      BukkitTask task = Bukkit.getScheduler().runTaskTimer(BambooLib.getPluginInstance(), () -> {
          try {
-            this.textLines.forEach((var1) -> {
-               if (var1.isCustomNameVisible()) {
-                  var1.setCustomNameVisible(true);
+            this.textLines.forEach((armorStand) -> {
+               if (armorStand.isCustomNameVisible()) {
+                  armorStand.setCustomNameVisible(true);
                }
 
-               if (this.placeholderMap.containsKey(var1)) {
-                  String var2 = this.placeholderMap.get(var1);
+               if (this.placeholderMap.containsKey(armorStand)) {
+                  String customName = this.placeholderMap.get(armorStand);
 
-                   for (RefreshablePlaceholder var4 : this.placeholders) {
-                       if (var2.contains(var4.getPlaceholder())) {
-                           var2 = var2.replace(var4.getPlaceholder(), var4.getValue());
-                       }
-                   }
+                  for (RefreshablePlaceholder placeholder : this.placeholders) {
+                     if (customName.contains(placeholder.getPlaceholder())) {
+                        customName = customName.replace(placeholder.getPlaceholder(), placeholder.getValue());
+                     }
+                  }
 
-                  var1.setCustomName(var2);
+                  armorStand.setCustomName(customName);
                }
 
             });
@@ -105,7 +105,7 @@ public class RefreshableHologram extends Hologram {
          }
 
       }, 0L, this.refreshTick);
-      this.tasksList.add(var);
+      this.tasksList.add(task);
       return this;
    }
 

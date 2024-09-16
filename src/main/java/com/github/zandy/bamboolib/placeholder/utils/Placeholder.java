@@ -5,11 +5,11 @@ import org.bukkit.entity.Player;
 public class Placeholder {
    private final String name;
 
-   public Placeholder(String var1) {
-      this.name = var1;
+   public Placeholder(String name) {
+      this.name = name;
    }
 
-   public String request(Player var1) {
+   public String request(Player player) {
       return null;
    }
 

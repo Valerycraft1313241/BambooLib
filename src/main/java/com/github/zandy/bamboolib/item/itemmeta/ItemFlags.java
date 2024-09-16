@@ -4,9 +4,9 @@ import com.github.zandy.bamboolib.item.ItemBuilder;
 import org.bukkit.inventory.ItemFlag;
 
 public interface ItemFlags {
-   ItemBuilder add(ItemFlag... var1);
+   ItemBuilder add(ItemFlag... itemFlags);
 
-   ItemBuilder remove(ItemFlag... var1);
+   ItemBuilder remove(ItemFlag... itemFlags);
 
-   boolean has(ItemFlag var1);
+   boolean has(ItemFlag itemFlags);
 }

@@ -6,5 +6,5 @@ import org.bukkit.entity.EntityType;
 public interface ItemSpawnEgg {
    EntityType getEntityType();
 
-   ItemBuilder setEntityType(EntityType var1);
+   ItemBuilder setEntityType(EntityType entityType);
 }

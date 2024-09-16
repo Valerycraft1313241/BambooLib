@@ -26,89 +26,87 @@ public class Scoreboard {
    private final HashMap<String, Callable<String>> placeholders;
    private final HashMap<Team, String> refresh = new HashMap<>();
 
-   public Scoreboard(Player var1, String var2, List<String> var3, HashMap<String, Callable<String>> var4) {
-      this.player = var1;
-      this.title = var2;
-      ArrayList<String> var5 = new ArrayList<>();
-      var5.add(" ");
-      var5.addAll(var3);
-      this.lines = var5;
-      this.placeholders = var4;
+   public Scoreboard(Player player, String title, List<String> lines, HashMap<String, Callable<String>> placeholders) {
+      this.player = player;
+      this.title = title;
+      ArrayList<String> formattedLines = new ArrayList<>();
+      formattedLines.add(" ");
+      formattedLines.addAll(lines);
+      this.lines = formattedLines;
+      this.placeholders = placeholders;
       this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
       this.objective = this.scoreboard.registerNewObjective("Scoreboard", "dummy");
       this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
       this.setLines();
-      var1.setScoreboard(this.scoreboard);
+      player.setScoreboard(this.scoreboard);
    }
 
    private void setLines() {
       this.scoreboard.getTeams().forEach(Team::unregister);
       this.objective.setDisplayName(this.title);
-      byte var1 = 0;
+      byte score = 0;
 
-      for(int var2 = this.lines.size(); var2 > 1; --var2) {
-         Team var3 = this.scoreboard.registerNewTeam("line-" + var2);
-         var3.addEntry(ChatColor.values()[var2 - 1].toString());
-         this.objective.getScore(ChatColor.values()[var2 - 1].toString()).setScore(var1);
-         ++var1;
-         String var4 = this.lines.get(var2 - 1);
-         if (!this.refresh.containsKey(var3)) {
-            if (this.containsPAPI(var4)) {
-               this.refresh.put(var3, var4);
+      for (int i = this.lines.size(); i > 1; --i) {
+         Team team = this.scoreboard.registerNewTeam("line-" + i);
+         team.addEntry(ChatColor.values()[i - 1].toString());
+         this.objective.getScore(ChatColor.values()[i - 1].toString()).setScore(score);
+         ++score;
+         String line = this.lines.get(i - 1);
+         if (!this.refresh.containsKey(team)) {
+            if (this.containsPAPI(line)) {
+               this.refresh.put(team, line);
             }
 
-            Stream<String> var10000 = this.placeholders.keySet().stream();
-            Objects.requireNonNull(var4);
-            var10000.filter(var4::contains).forEach((var3x) -> {
-               this.refresh.put(var3, var4);
+            Stream<String> placeholderKeys = this.placeholders.keySet().stream();
+            Objects.requireNonNull(line);
+            placeholderKeys.filter(line::contains).forEach((key) -> {
+               this.refresh.put(team, line);
             });
          }
 
-         this.setLine(var3, var4);
+         this.setLine(team, line);
       }
-
    }
 
-   private void setLine(Team var1, String var2) {
-      if (this.refresh.containsKey(var1)) {
-         if (this.containsPAPI(var2)) {
-            var2 = PlaceholderAPI.setPlaceholders(this.player, var2);
+   private void setLine(Team team, String line) {
+      if (this.refresh.containsKey(team)) {
+         if (this.containsPAPI(line)) {
+            line = PlaceholderAPI.setPlaceholders(this.player, line);
          }
 
-         Entry var4;
+         Entry<String, Callable<String>> entry;
          try {
-            for(Iterator var3 = this.placeholders.entrySet().iterator(); var3.hasNext(); var2 = var2.replace((CharSequence)var4.getKey(), (CharSequence)((Callable)var4.getValue()).call())) {
-               var4 = (Entry)var3.next();
+            for (Iterator<Entry<String, Callable<String>>> iterator = this.placeholders.entrySet().iterator(); iterator.hasNext(); line = line.replace(entry.getKey(), entry.getValue().call())) {
+               entry = iterator.next();
             }
-         } catch (Exception var5) {
+         } catch (Exception ignored) {
          }
       }
 
-      if (var2.length() >= 16) {
-         String var7 = var2.substring(0, 16);
-         String var6;
-         if (!var7.endsWith("&") && !var7.endsWith("§")) {
-            if (!var7.substring(0, 15).endsWith("&") && !var7.substring(0, 15).endsWith("§")) {
-               var6 = ChatColor.getLastColors(var7) + var2.substring(var7.length());
-               if (var6.length() > 16) {
-                  var6 = var6.substring(0, 16);
+      if (line.length() >= 16) {
+         String prefix = line.substring(0, 16);
+         String suffix;
+         if (!prefix.endsWith("&") && !prefix.endsWith("§")) {
+            if (!prefix.substring(0, 15).endsWith("&") && !prefix.substring(0, 15).endsWith("§")) {
+               suffix = ChatColor.getLastColors(prefix) + line.substring(prefix.length());
+               if (suffix.length() > 16) {
+                  suffix = suffix.substring(0, 16);
                }
             } else {
-               var7 = var7.substring(0, var7.length() - 2);
-               var6 = var2.substring(var7.length());
+               prefix = prefix.substring(0, prefix.length() - 2);
+               suffix = line.substring(prefix.length());
             }
          } else {
-            var7 = var7.substring(0, var7.length() - 1);
-            var6 = var2.substring(var7.length());
+            prefix = prefix.substring(0, prefix.length() - 1);
+            suffix = line.substring(prefix.length());
          }
 
-         var1.setPrefix(var7);
-         var1.setSuffix(var6);
+         team.setPrefix(prefix);
+         team.setSuffix(suffix);
       } else {
-         var1.setPrefix(var2);
-         var1.setSuffix("");
+         team.setPrefix(line);
+         team.setSuffix("");
       }
-
    }
 
    public void refresh() {
@@ -119,7 +117,7 @@ public class Scoreboard {
       this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
    }
 
-   private boolean containsPAPI(String var1) {
-      return !BambooUtils.isPluginEnabled("PlaceholderAPI") ? false : PlaceholderAPI.containsPlaceholders(var1);
+   private boolean containsPAPI(String text) {
+      return BambooUtils.isPluginEnabled("PlaceholderAPI") && PlaceholderAPI.containsPlaceholders(text);
    }
 }

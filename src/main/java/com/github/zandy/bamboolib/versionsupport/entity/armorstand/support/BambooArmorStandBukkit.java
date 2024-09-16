@@ -9,35 +9,34 @@ import org.bukkit.util.EulerAngle;
 public class BambooArmorStandBukkit extends BambooArmorStand {
    private final ArmorStand armorStand;
 
-   public BambooArmorStandBukkit(String var1, Location var2) {
-      super(var1, var2);
-      this.armorStand = var2.getWorld().spawn(var2, ArmorStand.class);
+   public BambooArmorStandBukkit(String customName, Location location) {
+      super(customName, location);
+      this.armorStand = location.getWorld().spawn(location, ArmorStand.class);
    }
 
    public ArmorStand getRawArmorStand() {
       return this.armorStand;
    }
 
-   public void setCustomName(String var1) {
-      this.armorStand.setCustomName(var1);
+   public void setCustomName(String customName) {
+      this.armorStand.setCustomName(customName);
    }
 
    public String getCustomName() {
       return this.armorStand.getCustomName();
    }
 
-   public void setCustomNameVisible(boolean var1) {
-      this.armorStand.setCustomNameVisible(var1);
+   public void setCustomNameVisible(boolean isVisible) {
+      this.armorStand.setCustomNameVisible(isVisible);
    }
 
    public boolean isCustomNameVisible() {
       return this.armorStand.isCustomNameVisible();
    }
 
-   public void setGravity(boolean var1) {
-      this.armorStand.setGravity(var1);
+   public void setGravity(boolean hasGravity) {
+      this.armorStand.setGravity(hasGravity);
    }
-
 
    public void remove() {
       this.armorStand.remove();
@@ -45,134 +44,134 @@ public class BambooArmorStandBukkit extends BambooArmorStand {
 
    @Override
    public void setInvulnerable() {
-
+      // Implementation here
    }
 
    public ItemStack getItemInHand() {
       return this.armorStand.getItemInHand();
    }
 
-   public void setItemInHand(ItemStack var1) {
-      this.armorStand.setItemInHand(var1);
+   public void setItemInHand(ItemStack itemStack) {
+      this.armorStand.setItemInHand(itemStack);
    }
 
    public ItemStack getBoots() {
       return this.armorStand.getBoots();
    }
 
-   public void setBoots(ItemStack var1) {
-      this.armorStand.setBoots(var1);
+   public void setBoots(ItemStack boots) {
+      this.armorStand.setBoots(boots);
    }
 
    public ItemStack getLeggings() {
       return this.armorStand.getLeggings();
    }
 
-   public void setLeggings(ItemStack var1) {
-      this.armorStand.setLeggings(var1);
+   public void setLeggings(ItemStack leggings) {
+      this.armorStand.setLeggings(leggings);
    }
 
    public ItemStack getChestplate() {
       return this.armorStand.getChestplate();
    }
 
-   public void setChestplate(ItemStack var1) {
-      this.armorStand.setChestplate(var1);
+   public void setChestplate(ItemStack chestplate) {
+      this.armorStand.setChestplate(chestplate);
    }
 
    public ItemStack getHelmet() {
       return this.armorStand.getHelmet();
    }
 
-   public void setHelmet(ItemStack var1) {
-      this.armorStand.setHelmet(var1);
+   public void setHelmet(ItemStack helmet) {
+      this.armorStand.setHelmet(helmet);
    }
 
    public EulerAngle getBodyPose() {
       return this.armorStand.getBodyPose();
    }
 
-   public void setBodyPose(EulerAngle var1) {
-      this.armorStand.setBodyPose(var1);
+   public void setBodyPose(EulerAngle bodyPose) {
+      this.armorStand.setBodyPose(bodyPose);
    }
 
    public EulerAngle getLeftArmPose() {
       return this.armorStand.getLeftArmPose();
    }
 
-   public void setLeftArmPose(EulerAngle var1) {
-      this.armorStand.setLeftArmPose(var1);
+   public void setLeftArmPose(EulerAngle leftArmPose) {
+      this.armorStand.setLeftArmPose(leftArmPose);
    }
 
    public EulerAngle getRightArmPose() {
       return this.armorStand.getRightArmPose();
    }
 
-   public void setRightArmPose(EulerAngle var1) {
-      this.armorStand.setRightArmPose(var1);
+   public void setRightArmPose(EulerAngle rightArmPose) {
+      this.armorStand.setRightArmPose(rightArmPose);
    }
 
    public EulerAngle getLeftLegPose() {
       return this.armorStand.getLeftLegPose();
    }
 
-   public void setLeftLegPose(EulerAngle var1) {
-      this.armorStand.setLeftLegPose(var1);
+   public void setLeftLegPose(EulerAngle leftLegPose) {
+      this.armorStand.setLeftLegPose(leftLegPose);
    }
 
    public EulerAngle getRightLegPose() {
       return this.armorStand.getRightLegPose();
    }
 
-   public void setRightLegPose(EulerAngle var1) {
-      this.armorStand.setRightLegPose(var1);
+   public void setRightLegPose(EulerAngle rightLegPose) {
+      this.armorStand.setRightLegPose(rightLegPose);
    }
 
    public EulerAngle getHeadPose() {
       return this.armorStand.getHeadPose();
    }
 
-   public void setHeadPose(EulerAngle var1) {
-      this.armorStand.setHeadPose(var1);
+   public void setHeadPose(EulerAngle headPose) {
+      this.armorStand.setHeadPose(headPose);
    }
 
    public boolean hasBasePlate() {
       return this.armorStand.hasBasePlate();
    }
 
-   public void setBasePlate(boolean var1) {
-      this.armorStand.setBasePlate(var1);
+   public void setBasePlate(boolean hasBasePlate) {
+      this.armorStand.setBasePlate(hasBasePlate);
    }
 
    public boolean isVisible() {
       return this.armorStand.isVisible();
    }
 
-   public void setVisible(boolean var1) {
-      this.armorStand.setVisible(var1);
+   public void setVisible(boolean isVisible) {
+      this.armorStand.setVisible(isVisible);
    }
 
    public boolean hasArms() {
       return this.armorStand.hasArms();
    }
 
-   public void setArms(boolean var1) {
-      this.armorStand.setArms(var1);
+   public void setArms(boolean hasArms) {
+      this.armorStand.setArms(hasArms);
    }
 
    public boolean isSmall() {
       return this.armorStand.isSmall();
    }
 
-   public void setSmall(boolean var1) {
-      this.armorStand.setSmall(var1);
+   public void setSmall(boolean isSmall) {
+      this.armorStand.setSmall(isSmall);
    }
 
    public boolean hasHitBox() {
       return this.armorStand.isMarker();
    }
 
-   public void setHitBox(boolean var1) {
-      this.armorStand.setMarker(var1);
+   public void setHitBox(boolean hasHitBox) {
+      this.armorStand.setMarker(hasHitBox);
    }
 }
