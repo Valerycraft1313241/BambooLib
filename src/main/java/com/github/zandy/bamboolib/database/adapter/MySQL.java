@@ -300,8 +300,8 @@ public class MySQL extends Database {
       if (this.connection != null) {
          try {
             this.connection.close();
-         } catch (Exception var2) {
-            throw new BambooErrorException(var2, this.getClass(), Arrays.asList("Cannot close the connection to the MySQL server.", "Probably, the MySQL server is down", "or your machine cannot reach the MySQL server."));
+         } catch (Exception exception) {
+            throw new BambooErrorException(exception, this.getClass(), Arrays.asList("Cannot close the connection to the MySQL server.", "Probably, the MySQL server is down", "or your machine cannot reach the MySQL server."));
          }
       }
    }
@@ -312,8 +312,8 @@ public class MySQL extends Database {
             this.connect();
          }
 
-      } catch (Throwable var2) {
-         var2.printStackTrace();
+      } catch (Throwable throwable) {
+         throwable.printStackTrace();
       }
    }
 }

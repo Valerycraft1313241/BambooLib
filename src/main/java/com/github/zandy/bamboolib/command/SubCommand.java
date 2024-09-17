@@ -11,42 +11,42 @@ public abstract class SubCommand {
    private String[] permissions = null;
    private Action clickAction;
 
-   public SubCommand(String var1, String var2, String[] var3) {
+   public SubCommand(String name, String description, String[] permissions) {
       this.clickAction = Action.SUGGEST_COMMAND;
-      this.name = var1;
-      this.permissions = var3;
-      this.description = var2;
+      this.name = name;
+      this.permissions = permissions;
+      this.description = description;
    }
 
-   public SubCommand(String var1, String var2) {
+   public SubCommand(String name, String description) {
       this.clickAction = Action.SUGGEST_COMMAND;
-      this.name = var1;
-      this.description = var2;
+      this.name = name;
+      this.description = description;
    }
 
-   public boolean hasPermission(CommandSender var1) {
+   public boolean hasPermission(CommandSender sender) {
       if (this.permissions == null) {
          return true;
       } else {
-         String[] var2 = this.permissions;
+         String[] permissionsArray = this.permissions;
 
-          for (String var5 : var2) {
-              if (var1.hasPermission(var5)) {
-                  return true;
-              }
-          }
+         for (String permission : permissionsArray) {
+            if (sender.hasPermission(permission)) {
+               return true;
+            }
+         }
 
          return false;
       }
    }
 
-   public List<String> tabComplete(CommandSender var1, String var2, String[] var3, Location var4) {
+   public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) {
       return null;
    }
 
-   public abstract void execute(CommandSender var1, String[] var2);
+   public abstract void execute(CommandSender sender, String[] args);
 
-   public abstract boolean canSee(CommandSender var1);
+   public abstract boolean canSee(CommandSender sender);
 
    public String getName() {
       return this.name;
@@ -64,7 +64,7 @@ public abstract class SubCommand {
       return this.clickAction;
    }
 
-   public void setClickAction(Action var1) {
-      this.clickAction = var1;
+   public void setClickAction(Action clickAction) {
+      this.clickAction = clickAction;
    }
 }

@@ -28,40 +28,39 @@ import org.bukkit.util.Vector;
 public abstract class VersionSupport {
    private static VersionSupport instance = null;
    private String version = null;
-   private VersionSupport.VersionType versionType;
+   private VersionType versionType;
 
    public void enablePickup() {
       Bukkit.getPluginManager().registerEvents(new PlayerPickup(), BambooLib.getPluginInstance());
    }
 
-   public UUID getSkullOwner(SkullMeta var1) {
-      return Bukkit.getPlayer(var1.getOwner()).getUniqueId();
+   public UUID getSkullOwner(SkullMeta skullMeta) {
+      return Bukkit.getPlayer(skullMeta.getOwner()).getUniqueId();
    }
 
-   public void setSkullOwner(ItemStack var1, String var2) {
-      SkullMeta var3 = (SkullMeta)var1.getItemMeta();
+   public void setSkullOwner(ItemStack itemStack, String owner) {
+      SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 
       try {
-         var3.setOwner(var2);
+         skullMeta.setOwner(owner);
       } catch (Exception ignored) {
       }
 
-      var1.setItemMeta(var3);
+      itemStack.setItemMeta(skullMeta);
    }
 
-   public abstract void addMetaData(ItemStack var1, String var2, String var3);
+   public abstract void addMetaData(ItemStack itemStack, String key, String value);
 
-   public abstract boolean hasMetaData(ItemStack var1, String var2);
+   public abstract boolean hasMetaData(ItemStack itemStack, String key);
 
-   public abstract String getMetaData(ItemStack var1, String var2);
+   public abstract String getMetaData(ItemStack itemStack, String key);
 
-   public abstract void removeMetaData(ItemStack var1, String var2);
+   public abstract void removeMetaData(ItemStack itemStack, String key);
 
-   public ItemMeta setUnbreakable(ItemMeta var1, boolean var2) {
-      var1.spigot().setUnbreakable(var2);
-      return var1;
+   public ItemMeta setUnbreakable(ItemMeta itemMeta, boolean unbreakable) {
+      itemMeta.spigot().setUnbreakable(unbreakable);
+      return itemMeta;
    }
-
 
    public void spawnParticle(Player player, Location location, String particleName, int count) {
       EnumParticle particle = EnumParticle.valueOf(particleName);
@@ -79,18 +78,18 @@ public abstract class VersionSupport {
       );
    }
 
-   public abstract BambooArmorStand getArmorStandVersionClass(Player var1, String var2, Location var3);
+   public abstract BambooArmorStand getArmorStandVersionClass(Player player, String name, Location location);
 
-   public abstract void registerCommand(Command var1);
+   public abstract void registerCommand(Command command);
 
-   public abstract void sendBorder(Player var1, BorderColor var2, int var3, double var4, double var6, boolean var8, int var9);
+   public abstract void sendBorder(Player player, BorderColor borderColor, int size, double centerX, double centerZ, boolean warning, int warningDistance);
 
-   public String getTexture(String var1) {
-      return new String(Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", var1).getBytes()));
+   public String getTexture(String url) {
+      return new String(Base64.encodeBase64(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes()));
    }
 
-   public void sendTitle(Player var1, String var2, String var3) {
-      var1.sendTitle(PlaceholderManager.getInstance().setPlaceholders(var1, var2), PlaceholderManager.getInstance().setPlaceholders(var1, var3));
+   public void sendTitle(Player player, String title, String subtitle) {
+      player.sendTitle(PlaceholderManager.getInstance().setPlaceholders(player, title), PlaceholderManager.getInstance().setPlaceholders(player, subtitle));
    }
 
    public void sendActionBar(Player player, String message) {
@@ -107,22 +106,22 @@ public abstract class VersionSupport {
       ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
    }
 
-   public abstract void sendTablist(Player var1, List<String> var2, List<String> var3);
+   public abstract void sendTablist(Player player, List<String> header, List<String> footer);
 
-   public abstract Fireball setFireballDirection(Fireball var1, Vector var2);
+   public abstract Fireball setFireballDirection(Fireball fireball, Vector direction);
 
    public static VersionSupport getInstance() {
       if (instance == null) {
-         String var0 = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
          try {
-            instance = (VersionSupport)Class.forName("com.github.zandy.bamboolib.versionsupport.support." + var0).newInstance();
-         } catch (Exception var2) {
-            throw new BambooException("&aBambooLib cannot run on &f" + var0);
+            instance = (VersionSupport) Class.forName("com.github.zandy.bamboolib.versionsupport.support." + version).newInstance();
+         } catch (Exception e) {
+            throw new BambooException("&aBambooLib cannot run on &f" + version);
          }
 
-         instance.version = var0;
-         instance.versionType = VersionSupport.VersionType.valueOf(var0);
+         instance.version = version;
+         instance.versionType = VersionType.valueOf(version);
       }
 
       return instance;
@@ -132,7 +131,7 @@ public abstract class VersionSupport {
       return this.version;
    }
 
-   public VersionSupport.VersionType getVersionType() {
+   public VersionType getVersionType() {
       return this.versionType;
    }
 
@@ -146,13 +145,12 @@ public abstract class VersionSupport {
 
       final int versionID;
 
-      VersionType(int var3) {
-         this.versionID = var3;
+      VersionType(int versionID) {
+         this.versionID = versionID;
       }
 
       public int getVersionID() {
          return this.versionID;
       }
-
    }
 }

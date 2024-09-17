@@ -4,7 +4,6 @@ import com.github.zandy.bamboolib.exceptions.BambooSoundError;
 import com.github.zandy.bamboolib.exceptions.BambooSoundNotFound;
 import com.github.zandy.bamboolib.versionsupport.VersionSupport;
 import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -15,57 +14,55 @@ public class Sound {
    private float volume = 10.0F;
    private float pitch = 0.0F;
 
-   public Sound(String var1) {
-      this.name = var1;
+   public Sound(String name) {
+      this.name = name;
       this.soundVersionCache = new HashMap<>();
    }
 
-   public Sound(String var1, float var2, float var3) {
-      this.name = var1;
+   public Sound(String name, float volume, float pitch) {
+      this.name = name;
       this.soundVersionCache = new HashMap<>();
-      this.volume = var2;
-      this.pitch = var3;
+      this.volume = volume;
+      this.pitch = pitch;
    }
 
-   public Sound(String var1, String var2) {
-      this.name = var1;
+   public Sound(String name, String versionSound) {
+      this.name = name;
       this.soundVersionCache = new HashMap<>();
-      this.soundVersionCache.put(VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion()), var2);
+      this.soundVersionCache.put(VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion()), versionSound);
    }
 
-   public Sound(String var1, String var2, float var3, float var4) {
-      this.name = var1;
+   public Sound(String name, String versionSound, float volume, float pitch) {
+      this.name = name;
       this.soundVersionCache = new HashMap<>();
-      this.soundVersionCache.put(VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion()), var2);
-      this.volume = var3;
-      this.pitch = var4;
+      this.soundVersionCache.put(VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion()), versionSound);
+      this.volume = volume;
+      this.pitch = pitch;
    }
 
    public String getSoundName() {
-      VersionSupport.VersionType var1 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      return this.soundVersionCache.getOrDefault(var1, null);
+      VersionSupport.VersionType versionType = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      return this.soundVersionCache.getOrDefault(versionType, null);
    }
 
-   public Sound addSupport(VersionSupport.VersionType var1, String var2) {
-      this.soundVersionCache.put(var1, var2);
+   public Sound addSupport(VersionSupport.VersionType versionType, String versionSound) {
+      this.soundVersionCache.put(versionType, versionSound);
       return this;
    }
 
    public void mergeSound() {
-      VersionSupport.VersionType var1 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      if (!this.soundVersionCache.containsKey(var1)) {
+      VersionSupport.VersionType currentVersion = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      if (!this.soundVersionCache.containsKey(currentVersion)) {
+         for (VersionSupport.VersionType versionType : this.soundVersionCache.keySet()) {
+            String versionSound = this.soundVersionCache.get(versionType);
 
-          for (VersionSupport.VersionType var3 : this.soundVersionCache.keySet()) {
-              String var4 = this.soundVersionCache.get(var3);
-
-              try {
-                  org.bukkit.Sound.valueOf(var4);
-                  this.addSupport(var1, var4);
-                  return;
-              } catch (Exception ignored) {
-              }
-          }
-
+            try {
+               org.bukkit.Sound.valueOf(versionSound);
+               this.addSupport(currentVersion, versionSound);
+               return;
+            } catch (Exception ignored) {
+            }
+         }
       }
    }
 
@@ -83,64 +80,64 @@ public class Sound {
       return this.volume;
    }
 
-   public void play(Player var1, Location var2, float var3, float var4) {
-      VersionSupport.VersionType var5 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      if (!this.soundVersionCache.containsKey(var5)) {
-         throw new BambooSoundError(var5);
+   public void play(Player player, Location location, float volume, float pitch) {
+      VersionSupport.VersionType versionType = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      if (!this.soundVersionCache.containsKey(versionType)) {
+         throw new BambooSoundError(versionType);
       } else {
-         var1.playSound(var2, org.bukkit.Sound.valueOf(this.soundVersionCache.get(var5)), var3, var4);
+         player.playSound(location, org.bukkit.Sound.valueOf(this.soundVersionCache.get(versionType)), volume, pitch);
       }
    }
 
-   public void play(Player var1, float var2, float var3) {
-      this.play(var1, var1.getLocation(), var2, var3);
+   public void play(Player player, float volume, float pitch) {
+      this.play(player, player.getLocation(), volume, pitch);
    }
 
-   public void play(Player var1) {
-      this.play(var1, var1.getLocation(), this.volume, this.pitch);
+   public void play(Player player) {
+      this.play(player, player.getLocation(), this.volume, this.pitch);
    }
 
-   public void play(Player var1, Location var2) {
-      this.play(var1, var2, this.volume, this.pitch);
+   public void play(Player player, Location location) {
+      this.play(player, location, this.volume, this.pitch);
    }
 
-   public static Sound getSound(String var0) {
-      return soundCache.getOrDefault(var0, null);
+   public static Sound getSound(String name) {
+      return soundCache.getOrDefault(name, null);
    }
 
-   public static void playSound(Player var0, String var1, Location var2, float var3, float var4) {
-      Sound var5 = getSound(var1);
-      if (var5 == null) {
-         throw new BambooSoundNotFound(var1);
+   public static void playSound(Player player, String soundName, Location location, float volume, float pitch) {
+      Sound sound = getSound(soundName);
+      if (sound == null) {
+         throw new BambooSoundNotFound(soundName);
       } else {
-         var5.play(var0, var2, var3, var4);
+         sound.play(player, location, volume, pitch);
       }
    }
 
-   public static void playSound(Player var0, String var1, float var2, float var3) {
-      Sound var4 = getSound(var1);
-      if (var4 == null) {
-         throw new BambooSoundNotFound(var1);
+   public static void playSound(Player player, String soundName, float volume, float pitch) {
+      Sound sound = getSound(soundName);
+      if (sound == null) {
+         throw new BambooSoundNotFound(soundName);
       } else {
-         var4.play(var0, var2, var3);
+         sound.play(player, volume, pitch);
       }
    }
 
-   public static void playSound(Player var0, String var1) {
-      Sound var2 = getSound(var1);
-      if (var2 == null) {
-         throw new BambooSoundNotFound(var1);
+   public static void playSound(Player player, String soundName) {
+      Sound sound = getSound(soundName);
+      if (sound == null) {
+         throw new BambooSoundNotFound(soundName);
       } else {
-         var2.play(var0);
+         sound.play(player);
       }
    }
 
-   public static void playSound(Player var0, String var1, Location var2) {
-      Sound var3 = getSound(var1);
-      if (var3 == null) {
-         throw new BambooSoundNotFound(var1);
+   public static void playSound(Player player, String soundName, Location location) {
+      Sound sound = getSound(soundName);
+      if (sound == null) {
+         throw new BambooSoundNotFound(soundName);
       } else {
-         var3.play(var0, var2);
+         sound.play(player, location);
       }
    }
 

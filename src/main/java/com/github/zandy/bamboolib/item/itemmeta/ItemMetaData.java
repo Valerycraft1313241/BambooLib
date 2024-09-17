@@ -3,7 +3,7 @@ package com.github.zandy.bamboolib.item.itemmeta;
 import com.github.zandy.bamboolib.item.ItemBuilder;
 
 public interface ItemMetaData {
-   ItemBuilder add(String metadataName, String var2);
+   ItemBuilder add(String metadataName, String metadataValue);
 
    String get(String metadata);
 

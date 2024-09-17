@@ -19,8 +19,8 @@ public enum Sounds {
 
    private final Sound sound;
 
-   private Sounds(Sound var3) {
-      this.sound = var3;
+   Sounds(Sound sound) {
+      this.sound = sound;
    }
 
    public Sound getSound() {

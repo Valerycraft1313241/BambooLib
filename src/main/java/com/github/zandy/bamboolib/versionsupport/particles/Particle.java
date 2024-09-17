@@ -3,7 +3,6 @@ package com.github.zandy.bamboolib.versionsupport.particles;
 import com.github.zandy.bamboolib.exceptions.BambooParticleError;
 import com.github.zandy.bamboolib.versionsupport.VersionSupport;
 import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -12,35 +11,33 @@ public class Particle {
    private final HashMap<VersionSupport.VersionType, String> particleVersionCache;
    private final String name;
 
-   public Particle(String var1) {
-      this.name = var1;
+   public Particle(String name) {
+      this.name = name;
       this.particleVersionCache = new HashMap<>();
    }
 
    public String getParticleName() {
-      VersionSupport.VersionType var1 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      return this.particleVersionCache.getOrDefault(var1, null);
+      VersionSupport.VersionType versionType = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      return this.particleVersionCache.getOrDefault(versionType, null);
    }
 
-   public Particle addSupport(VersionSupport.VersionType var1, String var2) {
-      this.particleVersionCache.put(var1, var2);
+   public Particle addSupport(VersionSupport.VersionType versionType, String particleName) {
+      this.particleVersionCache.put(versionType, particleName);
       return this;
    }
 
    public void mergeParticle() {
-      VersionSupport.VersionType var1 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      if (!this.particleVersionCache.containsKey(var1)) {
+      VersionSupport.VersionType currentVersion = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      if (!this.particleVersionCache.containsKey(currentVersion)) {
+         for (VersionSupport.VersionType versionType : this.particleVersionCache.keySet()) {
+            String particleName = this.particleVersionCache.get(versionType);
 
-          for (VersionSupport.VersionType var3 : this.particleVersionCache.keySet()) {
-              String var4 = this.particleVersionCache.get(var3);
-
-              try {
-                  this.addSupport(var1, var4);
-                  return;
-              } catch (Exception ignored) {
-              }
-          }
-
+            try {
+               this.addSupport(currentVersion, particleName);
+               return;
+            } catch (Exception ignored) {
+            }
+         }
       }
    }
 
@@ -50,26 +47,26 @@ public class Particle {
       return this;
    }
 
-   public void spawn(Player var1, Location var2, int var3) {
-      VersionSupport.VersionType var4 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      if (!this.particleVersionCache.containsKey(var4)) {
-         throw new BambooParticleError(var4);
+   public void spawn(Player player, Location location, int count) {
+      VersionSupport.VersionType versionType = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      if (!this.particleVersionCache.containsKey(versionType)) {
+         throw new BambooParticleError(versionType);
       } else {
-         VersionSupport.getInstance().spawnParticle(var1, var2, this.particleVersionCache.get(var4), var3);
+         VersionSupport.getInstance().spawnParticle(player, location, this.particleVersionCache.get(versionType), count);
       }
    }
 
-   public void spawn(Player var1, int var2) {
-      VersionSupport.VersionType var3 = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
-      if (!this.particleVersionCache.containsKey(var3)) {
-         throw new BambooParticleError(var3);
+   public void spawn(Player player, int count) {
+      VersionSupport.VersionType versionType = VersionSupport.VersionType.valueOf(VersionSupport.getInstance().getVersion());
+      if (!this.particleVersionCache.containsKey(versionType)) {
+         throw new BambooParticleError(versionType);
       } else {
-         VersionSupport.getInstance().spawnParticle(var1, var1.getLocation(), this.particleVersionCache.get(var3), var2);
+         VersionSupport.getInstance().spawnParticle(player, player.getLocation(), this.particleVersionCache.get(versionType), count);
       }
    }
 
-   public static Particle getBambooParticle(String var0) {
-      return particleCache.getOrDefault(var0, null);
+   public static Particle getBambooParticle(String name) {
+      return particleCache.getOrDefault(name, null);
    }
 
    public String getName() {

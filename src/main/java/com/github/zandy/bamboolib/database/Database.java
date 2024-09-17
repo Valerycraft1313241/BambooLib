@@ -16,45 +16,45 @@ public abstract class Database {
    private static DatabaseCredentials databaseCredentials = null;
    private Database.DatabaseType databaseType = null;
 
-   public void createTable(String var1, List<Column> var2) {
+   public void createTable(String tableName, List<Column> columns) {
    }
 
-   public void addColumn(String var1, Column var2) {
+   public void addColumn(String tableName, Column column) {
    }
 
-   public abstract boolean hasAccount(UUID var1, String var2);
+   public abstract boolean hasAccount(UUID uuid, String accountName);
 
-   public abstract void createPlayer(UUID var1, String var2, List<ColumnInfo> var3);
+   public abstract void createPlayer(UUID uuid, String playerName, List<ColumnInfo> columnInfoList);
 
-   public abstract BambooResultSet getResultSet(UUID var1, String var2);
+   public abstract BambooResultSet getResultSet(UUID uuid, String query);
 
-   public abstract boolean contains(UUID var1, String var2);
+   public abstract boolean contains(UUID uuid, String query);
 
-   public abstract String getString(UUID var1, String var2, String var3);
+   public abstract String getString(UUID uuid, String tableName, String columnName);
 
-   public abstract void setString(UUID var1, String var2, String var3, String var4);
+   public abstract void setString(UUID uuid, String tableName, String columnName, String value);
 
-   public abstract boolean getBoolean(UUID var1, String var2, String var3);
+   public abstract boolean getBoolean(UUID uuid, String tableName, String columnName);
 
-   public abstract void setBoolean(UUID var1, boolean var2, String var3, String var4);
+   public abstract void setBoolean(UUID uuid, boolean value, String tableName, String columnName);
 
-   public abstract int getInt(UUID var1, String var2, String var3);
+   public abstract int getInt(UUID uuid, String tableName, String columnName);
 
-   public abstract void setInt(UUID var1, int var2, String var3, String var4);
+   public abstract void setInt(UUID uuid, int value, String tableName, String columnName);
 
-   public abstract long getLong(UUID var1, String var2, String var3);
+   public abstract long getLong(UUID uuid, String tableName, String columnName);
 
-   public abstract void setLong(UUID var1, long var2, String var4, String var5);
+   public abstract void setLong(UUID uuid, long value, String tableName, String columnName);
 
-   public abstract float getFloat(UUID var1, String var2, String var3);
+   public abstract float getFloat(UUID uuid, String tableName, String columnName);
 
-   public abstract void setFloat(UUID var1, float var2, String var3, String var4);
+   public abstract void setFloat(UUID uuid, float value, String tableName, String columnName);
 
-   public abstract double getDouble(UUID var1, String var2, String var3);
+   public abstract double getDouble(UUID uuid, String tableName, String columnName);
 
-   public abstract void setDouble(UUID var1, double var2, String var4, String var5);
+   public abstract void setDouble(UUID uuid, double value, String tableName, String columnName);
 
-   public abstract void deleteProfile(UUID var1, String var2);
+   public abstract void deleteProfile(UUID uuid, String profileName);
 
    public void close() {
    }
@@ -74,7 +74,7 @@ public abstract class Database {
       }
    }
 
-   public DatabaseProfile getProfile(UUID var1) {
+   public DatabaseProfile getProfile(UUID uuid) {
       return null;
    }
 

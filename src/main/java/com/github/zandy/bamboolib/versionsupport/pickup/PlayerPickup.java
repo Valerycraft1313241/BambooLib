@@ -7,9 +7,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class PlayerPickup implements Listener {
    @EventHandler
-   private void onPlayerPickup(PlayerPickupItemEvent var1) {
-      com.github.zandy.bamboolib.events.player.PlayerPickupItemEvent var2 = new com.github.zandy.bamboolib.events.player.PlayerPickupItemEvent(var1.getPlayer(), var1.getItem(), var1.getRemaining());
-      Bukkit.getPluginManager().callEvent(var2);
-      var1.setCancelled(var2.isCancelled());
+   private void onPlayerPickup(PlayerPickupItemEvent event) {
+      com.github.zandy.bamboolib.events.player.PlayerPickupItemEvent event1 = new com.github.zandy.bamboolib.events.player.PlayerPickupItemEvent(event.getPlayer(), event.getItem(), event.getRemaining());
+      Bukkit.getPluginManager().callEvent(event1);
+      event.setCancelled(event1.isCancelled());
    }
 }

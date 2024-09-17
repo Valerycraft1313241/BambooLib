@@ -7,19 +7,19 @@ public enum BorderColor {
    double size;
    double sizeTo;
 
-   BorderColor(double var3, double var5) {
-      this.size = var3;
-      this.sizeTo = var5;
+   BorderColor(double size, double sizeTo) {
+      this.size = size;
+      this.sizeTo = sizeTo;
    }
 
    BorderColor() {
    }
 
-   public double formatSize(int var1) {
-      return (double)var1 - this.size;
+   public double formatSize(int size2) {
+      return (double)size2 - this.size;
    }
 
-   public double formatSizeTo(int var1) {
-      return (double)var1 - this.sizeTo;
+   public double formatSizeTo(int size2) {
+      return (double)size2 - this.sizeTo;
    }
 }

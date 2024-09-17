@@ -4,9 +4,9 @@ public class ColumnInfo {
    private final String columnName;
    private final Object value;
 
-   public ColumnInfo(String var1, Object var2) {
-      this.columnName = var1;
-      this.value = var2;
+   public ColumnInfo(String columnName, Object value) {
+      this.columnName = columnName;
+      this.value = value;
    }
 
    public String getValue() {

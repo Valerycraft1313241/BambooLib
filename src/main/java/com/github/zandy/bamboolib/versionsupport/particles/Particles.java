@@ -7,8 +7,8 @@ public enum Particles {
 
    private final Particle particle;
 
-   Particles(Particle var3) {
-      this.particle = var3;
+   Particles(Particle particle) {
+      this.particle = particle;
    }
 
    public Particle getParticle() {

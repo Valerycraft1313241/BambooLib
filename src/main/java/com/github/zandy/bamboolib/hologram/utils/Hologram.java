@@ -3,7 +3,7 @@ package com.github.zandy.bamboolib.hologram.utils;
 import org.bukkit.Location;
 
 public abstract class Hologram {
-   public abstract Hologram addLine(int var1, Location var2, String var3);
+   public abstract Hologram addLine(int index, Location location, String text);
 
    public Hologram refresh() {
       return null;
