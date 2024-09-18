@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
@@ -34,7 +33,7 @@ public class MySQL extends Database {
 
    private MySQL() {
       this.connect();
-      this.playerAccounts = new HashMap();
+      this.playerAccounts = new HashMap<>();
    }
 
    private void connect() {
@@ -56,19 +55,17 @@ public class MySQL extends Database {
       StringBuilder var3 = new StringBuilder();
       StringBuilder var4 = new StringBuilder();
       boolean var5 = true;
-      Iterator var6 = var2.iterator();
 
-      while(var6.hasNext()) {
-         Column var7 = (Column)var6.next();
-         if (var5) {
-            var5 = false;
-            var3 = new StringBuilder(var7.build());
-            var4 = new StringBuilder(var7.getName());
-         } else {
-            var3.append(", ").append(var7.build());
-            var4.append(", ").append(var7.getName());
-         }
-      }
+       for (Column var7 : var2) {
+           if (var5) {
+               var5 = false;
+               var3 = new StringBuilder(var7.build());
+               var4 = new StringBuilder(var7.getName());
+           } else {
+               var3.append(", ").append(var7.build());
+               var4.append(", ").append(var7.getName());
+           }
+       }
 
       try {
          this.connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `" + var1 + "` (" + var3 + ");");
@@ -84,13 +81,13 @@ public class MySQL extends Database {
       try {
          this.connection.createStatement().executeUpdate("ALTER TABLE `" + var1 + "` ADD COLUMN " + var2.build() + ";");
          Bukkit.getPluginManager().callEvent(new DatabaseChangeEvent(DatabaseChangeEvent.DatabaseAction.ALTER, var1, var2.getName()));
-      } catch (Exception var4) {
+      } catch (Exception ignored) {
       }
 
    }
 
    public boolean hasAccount(UUID var1, String var2) {
-      if (this.playerAccounts.containsKey(var1) && ((List)this.playerAccounts.get(var1)).contains(var2)) {
+      if (this.playerAccounts.containsKey(var1) && this.playerAccounts.get(var1).contains(var2)) {
          return true;
       } else {
          this.toConnect();
@@ -99,7 +96,7 @@ public class MySQL extends Database {
             Bukkit.getPluginManager().callEvent(new DatabaseChangeEvent(DatabaseChangeEvent.DatabaseAction.SELECT, var2, "Not Defined"));
             boolean var3 = (new BambooResultSet(this.connection.createStatement().executeQuery("SELECT UUID FROM `" + var2 + "` WHERE UUID = '" + var1.toString() + "';"))).next();
             if (var3) {
-               List var4 = (List)this.playerAccounts.getOrDefault(var1, new ArrayList());
+               List<String> var4 = this.playerAccounts.getOrDefault(var1, new ArrayList<>());
                var4.add(var2);
                this.playerAccounts.put(var1, var4);
             }
@@ -116,19 +113,17 @@ public class MySQL extends Database {
       StringBuilder var4 = new StringBuilder();
       StringBuilder var5 = new StringBuilder();
       boolean var6 = true;
-      Iterator var7 = var3.iterator();
 
-      while(var7.hasNext()) {
-         ColumnInfo var8 = (ColumnInfo)var7.next();
-         if (var6) {
-            var6 = false;
-            var4 = new StringBuilder(var8.getColumnName());
-            var5 = new StringBuilder(var8.getValue());
-         } else {
-            var4.append(",").append(var8.getColumnName());
-            var5.append(",").append(var8.getValue());
-         }
-      }
+       for (ColumnInfo var8 : var3) {
+           if (var6) {
+               var6 = false;
+               var4 = new StringBuilder(var8.getColumnName());
+               var5 = new StringBuilder(var8.getValue());
+           } else {
+               var4.append(",").append(var8.getColumnName());
+               var5.append(",").append(var8.getValue());
+           }
+       }
 
       try {
          this.connection.createStatement().executeUpdate("INSERT INTO `" + var2 + "` (" + var4 + ") VALUES (" + var5 + ");");
@@ -158,7 +153,7 @@ public class MySQL extends Database {
          try {
             BambooResultSet var3 = new BambooResultSet(this.connection.createStatement().executeQuery("SELECT * FROM `" + var2 + "` WHERE UUID = '" + var1.toString() + "';"));
             Bukkit.getPluginManager().callEvent(new DatabaseChangeEvent(DatabaseChangeEvent.DatabaseAction.SELECT, var2, "Not Defined"));
-            return var3.next() ? var3.next() : false;
+            return var3.next() && var3.next();
          } catch (Exception var4) {
             throw new BambooErrorException(var4, this.getClass(), Arrays.asList("Cannot check if the MySQL server contains an object.", "Probably, the MySQL server is down", "or your machine cannot reach the MySQL server."));
          }
@@ -200,7 +195,7 @@ public class MySQL extends Database {
          try {
             BambooResultSet var4 = new BambooResultSet(this.connection.createStatement().executeQuery("SELECT " + var2 + " FROM `" + var3 + "` WHERE UUID = '" + var1 + "';"));
             Bukkit.getPluginManager().callEvent(new DatabaseChangeEvent(DatabaseChangeEvent.DatabaseAction.SELECT, var3, var2));
-            return var4.next() ? Boolean.parseBoolean(var4.getString(var2)) : false;
+            return var4.next() && Boolean.parseBoolean(var4.getString(var2));
          } catch (Exception var5) {
             throw new BambooErrorException(var5, this.getClass(), Arrays.asList("Cannot get Boolean from the MySQL server.", "Probably, the MySQL server is down", "or your machine cannot reach the MySQL server."));
          }
